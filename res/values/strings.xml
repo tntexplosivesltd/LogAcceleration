@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, LogAccelerationActivity!</string>
+    <string name="app_name">LogAcceleration</string>
+    <string name="offset">Gravity offset?</string>
+    <string name="reset">Reset max/min</string>
+</resources>
