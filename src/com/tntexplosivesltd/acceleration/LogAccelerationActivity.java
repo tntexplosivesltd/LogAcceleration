@@ -1,5 +1,6 @@
 package com.tntexplosivesltd.acceleration;
 
+
 import android.app.Activity;
 import android.content.Context;
 // Hardware/accelerometer imports
@@ -18,14 +19,12 @@ import android.widget.TextView;
 
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
+	// "Primitive" types
 	float offset = 0f;
-	Float x, y, z; 
-	Float min_x = 100.f; 
-	Float min_y = 100.f; 
-	Float min_z = 100.f; 
-	Float max_x = -100.f; 
-	Float max_y = -100.f; 
-	Float max_z = -100.f;
+	int max_data = 10;
+	String elements = new String();
+	
+	GraphData graph_data = new GraphData();
 	
 	PowerManager pm = null;
 	PowerManager.WakeLock wl = null;
@@ -62,6 +61,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         minimum_x = (TextView) findViewById(R.id.x_min);
         minimum_y = (TextView) findViewById(R.id.y_min);
         minimum_z = (TextView) findViewById(R.id.z_min);
+        
     }
     
     @Override
@@ -89,37 +89,47 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     		{
     		case Sensor.TYPE_ACCELEROMETER:
 
-    			x = event.values[0];
-    			y = event.values[1];
-    			z = event.values[2];
+    			graph_data.x = event.values[0];
+    			graph_data.y = event.values[1];
+    			graph_data.z = event.values[2];
     			
-    			if (x > max_x)
-    				max_x = x;
-    			else if (x < min_x)
-    				min_x = x;
+    			if (graph_data.x > graph_data.max_x)
+    				graph_data.max_x = graph_data.x;
+    			else if (graph_data.x < graph_data.min_x)
+    				graph_data.min_x = graph_data.x;
 
-    			if (y > max_y)
-    				max_y = y;
-    			else if (y < min_y)
-    				min_y = y;
+    			if (graph_data.y > graph_data.max_y)
+    				graph_data.max_y = graph_data.y;
+    			else if (graph_data.y < graph_data.min_y)
+    				graph_data.min_y = graph_data.y;
     			
-    			if (z > max_z)
-    				max_z = z;
-    			else if (z < min_z)
-    				min_z = z;
+    			if (graph_data.z > graph_data.max_z)
+    				graph_data.max_z = graph_data.z;
+    			else if (graph_data.z < graph_data.min_z)
+    				graph_data.min_z = graph_data.z;
     			
-    			output_x.setText("x:" + String.format("%.2f%n", x));
-    			output_y.setText("y:" + String.format("%.2f%n", y));
-    			output_z.setText("z:" + String.format("%.2f%n", z - offset));
+    			output_x.setText("x:" + String.format("%.2f%n", graph_data.x));
+    			output_y.setText("y:" + String.format("%.2f%n", graph_data.y));
+    			output_z.setText("z:" + String.format("%.2f%n", graph_data.z - offset));
     			
+    			graph_data.data.addLast(graph_data.x);
+    			elements="";
+    			if (graph_data.data.size() > max_data)
+    			{
+    				graph_data.data.poll();
+    			}
+    			for (Float point : graph_data.data)
+    			{
+    				elements += (point.toString() + ", ");
+    			}
     			
-    			minimum_x.setText("min_x:" + String.format("%.2f%n", min_x));
-    			minimum_y.setText("min_y:" + String.format("%.2f%n", min_y));
-    			minimum_z.setText("min_z:" + String.format("%.2f%n", min_z - offset));
+    			minimum_x.setText("min_x:" + String.format("%.2f%n", graph_data.min_x));
+    			minimum_y.setText("min_y:" + String.format("%.2f%n", graph_data.min_y));
+    			minimum_z.setText("min_z:" + String.format("%.2f%n", graph_data.min_z - offset));
     			
-    			maximum_x.setText("max_x:" + String.format("%.2f%n", max_x));
-    			maximum_y.setText("max_y:" + String.format("%.2f%n", max_y));
-    			maximum_z.setText("max_z:" + String.format("%.2f%n", max_z - offset));
+    			maximum_x.setText("max_x:" + String.format("%.2f%n", graph_data.max_x));
+    			maximum_y.setText("max_y:" + String.format("%.2f%n", graph_data.max_y));
+    			maximum_z.setText("max_z:" + String.format("%.2f%n", graph_data.max_z - offset));
     		}
     	}
     }
@@ -153,12 +163,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			}
 			return true;
 		case R.id.reset:
-			max_x = -100.f;
-			max_y = -100.f;
-			max_z = -100.f;
-			min_x = 100.f;
-			min_y = 100.f;
-			min_z = 100.f;
+			graph_data.reset();
 		default:
 			return super.onOptionsItemSelected(item);
 		}

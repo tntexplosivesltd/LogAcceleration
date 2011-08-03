@@ -16,7 +16,8 @@ public final class R {
         public static final int reset=0x7f020002;
     }
     public static final class id {
-        public static final int reset=0x7f06000e;
+        public static final int SurfaceView01=0x7f06000d;
+        public static final int reset=0x7f06000f;
         public static final int tableLayout1=0x7f060000;
         public static final int tableRow1=0x7f060001;
         public static final int tableRow2=0x7f060005;
@@ -30,7 +31,7 @@ public final class R {
         public static final int z=0x7f06000a;
         public static final int z_max=0x7f06000c;
         public static final int z_min=0x7f06000b;
-        public static final int z_offset=0x7f06000d;
+        public static final int z_offset=0x7f06000e;
     }
     public static final class layout {
         public static final int main=0x7f030000;
