@@ -66,7 +66,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     protected void onResume()
     {
     	wl.acquire();
-    	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+    	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     	super.onResume();
     }
     
@@ -111,25 +111,34 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			output_y.setText("y:" + String.format("%.2f%n", GraphData.y));
     			output_z.setText("z:" + String.format("%.2f%n", GraphData.z - GraphData.offset));
     			
-    			GraphData.data_x.addLast(GraphData.x);
-    			elements="";
-    			if (GraphData.data_x.size() > GraphData.max_data)
+    			synchronized(GraphData.data_x)
     			{
-    				GraphData.data_x.poll();
+    				GraphData.data_x.addLast(GraphData.x);
+    				elements="";
+    				if (GraphData.data_x.size() > GraphData.max_data)
+    				{
+    					GraphData.data_x.poll();
+    				}
     			}
     			
-    			GraphData.data_y.addLast(GraphData.y);
-    			elements="";
-    			if (GraphData.data_y.size() > GraphData.max_data)
+    			synchronized(GraphData.data_y)
     			{
-    				GraphData.data_y.poll();
+    				GraphData.data_y.addLast(GraphData.y);
+    				elements="";
+    				if (GraphData.data_y.size() > GraphData.max_data)
+    				{
+    					GraphData.data_y.poll();
+    				}
     			}
     			
-    			GraphData.data_z.addLast(GraphData.z);
-    			elements="";
-    			if (GraphData.data_z.size() > GraphData.max_data)
+    			synchronized(GraphData.data_z)
     			{
-    				GraphData.data_z.poll();
+    				GraphData.data_z.addLast(GraphData.z);
+    				elements="";
+    				if (GraphData.data_z.size() > GraphData.max_data)
+    				{
+    					GraphData.data_z.poll();
+    				}
     			}
     			
     			minimum_x.setText("min_x:" + String.format("%.2f%n", GraphData.min_x));
