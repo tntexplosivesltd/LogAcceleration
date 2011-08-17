@@ -2,10 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
 		android:id="@+id/z_offset"
-		android:title="@string/offset"
+		android:title="@string/offset_off"
 		android:icon="@drawable/arrow" />
 	<item
 		android:id="@+id/reset"
 		android:title="@string/reset"
 		android:icon="@drawable/reset" />
+	<item
+		android:id="@+id/orientation"
+		android:title="@string/orientation_flat"/>
+	<item
+		android:id="@+id/mode"
+		android:title="@string/mode_circle"/>
+	<item
+		android:id="@+id/graphs"
+		android:title="@string/show_on"/>
 </menu>

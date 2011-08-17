@@ -17,6 +17,9 @@ public final class R {
     }
     public static final class id {
         public static final int SurfaceView01=0x7f06000d;
+        public static final int graphs=0x7f060012;
+        public static final int mode=0x7f060011;
+        public static final int orientation=0x7f060010;
         public static final int reset=0x7f06000f;
         public static final int tableLayout1=0x7f060000;
         public static final int tableRow1=0x7f060001;
@@ -42,7 +45,14 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040001;
         public static final int hello=0x7f040000;
-        public static final int offset=0x7f040002;
-        public static final int reset=0x7f040003;
+        public static final int mode_circle=0x7f040007;
+        public static final int mode_graph=0x7f040008;
+        public static final int mode_off=0x7f040009;
+        public static final int offset_off=0x7f040003;
+        public static final int offset_on=0x7f040002;
+        public static final int orientation_flat=0x7f040005;
+        public static final int orientation_upright=0x7f040006;
+        public static final int reset=0x7f040004;
+        public static final int show_on=0x7f04000a;
     }
 }

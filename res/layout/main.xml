@@ -47,5 +47,6 @@
     	android:id="@+id/SurfaceView01"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:maxHeight="40dip" />
+    	android:maxHeight="2dip"
+    	android:maxWidth="2dip" />
 </LinearLayout>

@@ -20,11 +20,8 @@ import android.widget.TextView;
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
 	// "Primitive" types
-	float offset = 0f;
-	int max_data = 10;
 	String elements = new String();
 	
-	GraphData graph_data = new GraphData();
 	
 	PowerManager pm = null;
 	PowerManager.WakeLock wl = null;
@@ -41,6 +38,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	TextView minimum_z;
 	
 	
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,14 +51,14 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         output_x = (TextView) findViewById(R.id.x);
         output_y = (TextView) findViewById(R.id.y);
         output_z = (TextView) findViewById(R.id.z);
-        
         maximum_x = (TextView) findViewById(R.id.x_max);
         maximum_y = (TextView) findViewById(R.id.y_max);
         maximum_z = (TextView) findViewById(R.id.z_max);
-        
         minimum_x = (TextView) findViewById(R.id.x_min);
         minimum_y = (TextView) findViewById(R.id.y_min);
         minimum_z = (TextView) findViewById(R.id.z_min);
+        
+
         
     }
     
@@ -68,16 +66,17 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     protected void onResume()
     {
     	wl.acquire();
+    	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
     	super.onResume();
-    	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
     }
     
     @Override
     protected void onStop()
     {
     	wl.release();
-    	super.onStop();
     	sensor_manager.unregisterListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+    	moveTaskToBack(true);
+    	super.onStop();
     }
     
     @Override
@@ -89,47 +88,57 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     		{
     		case Sensor.TYPE_ACCELEROMETER:
 
-    			graph_data.x = event.values[0];
-    			graph_data.y = event.values[1];
-    			graph_data.z = event.values[2];
+    			GraphData.x = event.values[0];
+    			GraphData.y = event.values[1];
+    			GraphData.z = event.values[2];
     			
-    			if (graph_data.x > graph_data.max_x)
-    				graph_data.max_x = graph_data.x;
-    			else if (graph_data.x < graph_data.min_x)
-    				graph_data.min_x = graph_data.x;
+    			if (GraphData.x > GraphData.max_x)
+    				GraphData.max_x = GraphData.x;
+    			else if (GraphData.x < GraphData.min_x)
+    				GraphData.min_x = GraphData.x;
 
-    			if (graph_data.y > graph_data.max_y)
-    				graph_data.max_y = graph_data.y;
-    			else if (graph_data.y < graph_data.min_y)
-    				graph_data.min_y = graph_data.y;
+    			if (GraphData.y > GraphData.max_y)
+    				GraphData.max_y = GraphData.y;
+    			else if (GraphData.y < GraphData.min_y)
+    				GraphData.min_y = GraphData.y;
     			
-    			if (graph_data.z > graph_data.max_z)
-    				graph_data.max_z = graph_data.z;
-    			else if (graph_data.z < graph_data.min_z)
-    				graph_data.min_z = graph_data.z;
+    			if (GraphData.z > GraphData.max_z)
+    				GraphData.max_z = GraphData.z;
+    			else if (GraphData.z < GraphData.min_z)
+    				GraphData.min_z = GraphData.z;
     			
-    			output_x.setText("x:" + String.format("%.2f%n", graph_data.x));
-    			output_y.setText("y:" + String.format("%.2f%n", graph_data.y));
-    			output_z.setText("z:" + String.format("%.2f%n", graph_data.z - offset));
+    			output_x.setText("x:" + String.format("%.2f%n", GraphData.x));
+    			output_y.setText("y:" + String.format("%.2f%n", GraphData.y));
+    			output_z.setText("z:" + String.format("%.2f%n", GraphData.z - GraphData.offset));
     			
-    			graph_data.data.addLast(graph_data.x);
+    			GraphData.data_x.addLast(GraphData.x);
     			elements="";
-    			if (graph_data.data.size() > max_data)
+    			if (GraphData.data_x.size() > GraphData.max_data)
     			{
-    				graph_data.data.poll();
-    			}
-    			for (Float point : graph_data.data)
-    			{
-    				elements += (point.toString() + ", ");
+    				GraphData.data_x.poll();
     			}
     			
-    			minimum_x.setText("min_x:" + String.format("%.2f%n", graph_data.min_x));
-    			minimum_y.setText("min_y:" + String.format("%.2f%n", graph_data.min_y));
-    			minimum_z.setText("min_z:" + String.format("%.2f%n", graph_data.min_z - offset));
+    			GraphData.data_y.addLast(GraphData.y);
+    			elements="";
+    			if (GraphData.data_y.size() > GraphData.max_data)
+    			{
+    				GraphData.data_y.poll();
+    			}
     			
-    			maximum_x.setText("max_x:" + String.format("%.2f%n", graph_data.max_x));
-    			maximum_y.setText("max_y:" + String.format("%.2f%n", graph_data.max_y));
-    			maximum_z.setText("max_z:" + String.format("%.2f%n", graph_data.max_z - offset));
+    			GraphData.data_z.addLast(GraphData.z);
+    			elements="";
+    			if (GraphData.data_z.size() > GraphData.max_data)
+    			{
+    				GraphData.data_z.poll();
+    			}
+    			
+    			minimum_x.setText("min_x:" + String.format("%.2f%n", GraphData.min_x));
+    			minimum_y.setText("min_y:" + String.format("%.2f%n", GraphData.min_y));
+    			minimum_z.setText("min_z:" + String.format("%.2f%n", GraphData.min_z - GraphData.offset));
+    			
+    			maximum_x.setText("max_x:" + String.format("%.2f%n", GraphData.max_x));
+    			maximum_y.setText("max_y:" + String.format("%.2f%n", GraphData.max_y));
+    			maximum_z.setText("max_z:" + String.format("%.2f%n", GraphData.max_z - GraphData.offset));
     		}
     	}
     }
@@ -153,17 +162,46 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		switch (item.getItemId())
 		{
 		case R.id.z_offset:
-			if (offset == 0)
+			if (GraphData.offset == 0)
 			{
-				offset = 9.80665f;
+				GraphData.offset = 9.80665f;
+				item.setTitle(R.string.offset_on);
 			}
 			else
 			{
-				offset = 0.f;
+				GraphData.offset = 0.f;
+				item.setTitle(R.string.offset_off);
 			}
 			return true;
 		case R.id.reset:
-			graph_data.reset();
+			GraphData.reset();
+			return true;
+		case R.id.orientation:
+			if (GraphData.orientation == 0)
+			{
+				GraphData.orientation = 1;
+				item.setTitle(R.string.orientation_upright);
+			}
+			else
+			{
+				GraphData.orientation = 0;
+				item.setTitle(R.string.orientation_flat);
+			}
+			return true;
+		case R.id.mode:
+			if (GraphData.mode == 0)
+			{
+				GraphData.mode = 1;
+				item.setTitle(R.string.mode_graph);
+			}
+			else
+			{
+				GraphData.mode = 0;
+				item.setTitle(R.string.mode_circle);
+			}
+			return true;
+		case R.id.graphs:
+			GraphData.show = !GraphData.show;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
