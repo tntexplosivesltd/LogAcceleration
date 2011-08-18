@@ -8,6 +8,10 @@
 package com.tntexplosivesltd.acceleration;
 
 public final class R {
+    public static final class array {
+        public static final int interval_display=0x7f050000;
+        public static final int interval_return=0x7f050001;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -16,27 +20,34 @@ public final class R {
         public static final int reset=0x7f020002;
     }
     public static final class id {
-        public static final int SurfaceView01=0x7f060000;
-        public static final int logging=0x7f060004;
-        public static final int mode=0x7f060002;
-        public static final int orientation=0x7f060001;
-        public static final int reset=0x7f060003;
+        public static final int SurfaceView01=0x7f080000;
+        public static final int logging=0x7f080004;
+        public static final int mode=0x7f080003;
+        public static final int orientation=0x7f080001;
+        public static final int reset=0x7f080002;
     }
     public static final class layout {
         public static final int main=0x7f030000;
     }
     public static final class menu {
-        public static final int main_menu=0x7f050000;
+        public static final int options_menu=0x7f070000;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
-        public static final int logging_off=0x7f040007;
-        public static final int logging_on=0x7f040008;
-        public static final int mode_circle=0x7f040005;
-        public static final int mode_graph=0x7f040006;
-        public static final int orientation_flat=0x7f040003;
-        public static final int orientation_upright=0x7f040004;
-        public static final int reset=0x7f040002;
+        public static final int app_name=0x7f060001;
+        public static final int hello=0x7f060000;
+        public static final int log_pref_desc=0x7f06000a;
+        public static final int log_pref_title=0x7f060009;
+        public static final int logging_off=0x7f060007;
+        public static final int logging_on=0x7f060008;
+        public static final int mode_circle=0x7f060005;
+        public static final int mode_graph=0x7f060006;
+        public static final int orientation_flat=0x7f060003;
+        public static final int orientation_upright=0x7f060004;
+        /**  Strings for OptionsMenu 
+         */
+        public static final int reset=0x7f060002;
+    }
+    public static final class xml {
+        public static final int preferences=0x7f040000;
     }
 }

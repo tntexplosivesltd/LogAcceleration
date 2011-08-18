@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="Settings">
+    <ListPreference android:entries="@array/interval_display"
+    				android:entryValues="@array/interval_return"
+    				android:title="@string/log_pref_title"
+    				android:key="log_pref"
+    				android:summary="@string/log_pref_desc" />
+</PreferenceScreen>

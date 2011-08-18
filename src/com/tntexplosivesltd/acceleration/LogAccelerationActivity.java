@@ -90,20 +90,23 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			
     			if (!logger.busy)
     			{
-        			to_log.clear();
-        			to_log.add((float)data_num);
-        			to_log.add(GraphData.x);
-        			to_log.add(GraphData.y);
-        			to_log.add(GraphData.z);
-        			logger.busy = true;
-    				Handler handler = new Handler();
-    				handler.postDelayed(new Runnable()
+    				if (logger.is_logging())
     				{
-    					public void run()
-    					{ logger.log(to_log);
-    				  	logger.busy = false;}
-    					}, 100);
-    				data_num++;
+    					to_log.clear();
+    					to_log.add((float)data_num);
+    					to_log.add(GraphData.x);
+    					to_log.add(GraphData.y);
+    					to_log.add(GraphData.z);
+    					logger.busy = true;
+    					Handler handler = new Handler();
+    					handler.postDelayed(new Runnable()
+    					{
+    						public void run()
+    						{ logger.log(to_log);
+    						logger.busy = false;}
+    						}, 100);
+    					data_num++;
+    				}
     			}
     			
     			if (GraphData.x > GraphData.max_x)
@@ -163,7 +166,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
+		inflater.inflate(R.menu.options_menu, menu);
 		return true;
 	}
 	
@@ -213,8 +216,11 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 				String log_message = logger.initialize();
 		        Toast toast = Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG);
 		        toast.show();
-		        item.setTitle(R.string.logging_on);
-		        data_num = 0;
+		        if (logger.is_logging())
+		        {
+		        	item.setTitle(R.string.logging_on);
+		        	data_num = 0;
+		        }
 			}
 			return true;
 		default:

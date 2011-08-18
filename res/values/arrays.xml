@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="interval_display">
+    	<item>100ms</item>
+    	<item>500ms</item>
+    	<item>1s</item>
+    	<item>5s</item>
+    	<item>10s</item>
+    	<item>30s</item>
+    	<item>1min</item>
+    	<item>5min</item>
+    </string-array>
+    
+    <string-array name="interval_return">
+    	<item>100</item>
+    	<item>500</item>
+    	<item>1000</item>
+    	<item>5000</item>
+    	<item>10000</item>
+    	<item>30000</item>
+    	<item>60000</item>
+    	<item>300000</item>
+    </string-array>
+</resources>

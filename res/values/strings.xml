@@ -2,6 +2,8 @@
 <resources>
     <string name="hello">Hello World, LogAccelerationActivity!</string>
     <string name="app_name">LogAcceleration</string>
+    
+    <!-- Strings for OptionsMenu -->
     <string name="reset">Reset max/min</string>
     <string name="orientation_flat">Phone is Flat</string>
     <string name="orientation_upright">Phone is Upright</string>
@@ -9,4 +11,7 @@
     <string name="mode_graph">Drawing Graphs</string>
     <string name="logging_off">Logging is OFF</string>
     <string name="logging_on">Logging is ON</string>
+    
+    <string name="log_pref_title">Logging Interval</string>
+    <string name="log_pref_desc">How often do you want the value saved to file?</string>
 </resources>

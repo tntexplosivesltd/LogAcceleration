@@ -4,12 +4,12 @@
 		android:id="@+id/orientation"
 		android:title="@string/orientation_flat"/>
 	<item
-		android:id="@+id/mode"
-		android:title="@string/mode_circle"/>
-	<item
 		android:id="@+id/reset"
 		android:title="@string/reset"
 		android:icon="@drawable/reset" />
+	<item
+		android:id="@+id/mode"
+		android:title="@string/mode_circle"/>
 	<item
 		android:id="@+id/logging"
 		android:title="@string/logging_off"/>
