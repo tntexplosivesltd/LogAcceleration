@@ -1,6 +1,8 @@
 package com.tntexplosivesltd.acceleration;
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 // Hardware/accelerometer imports
@@ -10,12 +12,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 // OS stuff including power manager
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 // View-related stuff
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
@@ -26,18 +29,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	PowerManager pm = null;
 	PowerManager.WakeLock wl = null;
 	SensorManager sensor_manager = null;
-	
-	TextView output_x;
-	TextView output_y;
-	TextView output_z;
-	TextView maximum_x;
-	TextView maximum_y;
-	TextView maximum_z;
-	TextView minimum_x;
-	TextView minimum_y;
-	TextView minimum_z;
-	
-	
+	ArrayList<Float> to_log = new ArrayList<Float>();
+	Logger logger = new Logger();
+	int data_num;
 	
     /** Called when the activity is first created. */
     @Override
@@ -49,6 +43,15 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         setContentView(R.layout.main);
     }
     
+    /*
+    @Override
+    protected void onStart()
+    {
+        //Toast toast = Toast.makeText(getApplicationContext(), "I have started!", Toast.LENGTH_LONG);
+        //toast.show();
+    }
+    */
+    
     @Override
     protected void onResume()
     {
@@ -57,12 +60,18 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	super.onResume();
     }
     
+    /*
+    protected void onPause()
+    {
+    	logger.set_logging(false);
+    }
+    */
+    
     @Override
     protected void onStop()
     {
     	wl.release();
     	sensor_manager.unregisterListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-    	moveTaskToBack(true);
     	super.onStop();
     }
     
@@ -78,6 +87,24 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			GraphData.x = event.values[0];
     			GraphData.y = event.values[1];
     			GraphData.z = event.values[2];
+    			
+    			if (!logger.busy)
+    			{
+        			to_log.clear();
+        			to_log.add((float)data_num);
+        			to_log.add(GraphData.x);
+        			to_log.add(GraphData.y);
+        			to_log.add(GraphData.z);
+        			logger.busy = true;
+    				Handler handler = new Handler();
+    				handler.postDelayed(new Runnable()
+    				{
+    					public void run()
+    					{ logger.log(to_log);
+    				  	logger.busy = false;}
+    					}, 100);
+    				data_num++;
+    			}
     			
     			if (GraphData.x > GraphData.max_x)
     				GraphData.max_x = GraphData.x;
@@ -170,6 +197,24 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			{
 				GraphData.mode = 0;
 				item.setTitle(R.string.mode_circle);
+			}
+			return true;
+		case R.id.logging:
+			if (logger.is_logging())
+			{
+				logger.set_logging(false);
+				item.setTitle(R.string.logging_off);
+				data_num = 0;
+				GraphData.logged_values = 0;
+			}
+			else
+			{
+				logger.set_logging(true);
+				String log_message = logger.initialize();
+		        Toast toast = Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG);
+		        toast.show();
+		        item.setTitle(R.string.logging_on);
+		        data_num = 0;
 			}
 			return true;
 		default:

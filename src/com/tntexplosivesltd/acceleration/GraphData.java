@@ -12,6 +12,7 @@ public class GraphData {
 	public static float max_y = -20.f; 
 	public static float max_z = -20.f;
 	public static int max_data = 150;
+	public static int logged_values; 
 	
 	/* MODE - might add more
 	 * 0 = circle

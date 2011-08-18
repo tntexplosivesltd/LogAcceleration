@@ -100,6 +100,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 						canvas.drawText(String.format("%.1f", i*2/10f-2f), i*view_width/lines, view_height/2, line_paint);
 					}
 				}
+				/*
 				if (GraphData.orientation == 0)
 				{
 					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.y*10, circle_diameter*dip, circle_paint);
@@ -108,6 +109,8 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 				{
 					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.z*10, circle_diameter*dip, circle_paint);
 				}
+				*/
+				canvas.drawText(""+GraphData.logged_values, view_width/2 - GraphData.x*10, view_height/2 + GraphData.y*10, circle_paint);
 			}
 			else
 			{

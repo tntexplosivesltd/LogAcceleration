@@ -2,11 +2,11 @@
 <resources>
     <string name="hello">Hello World, LogAccelerationActivity!</string>
     <string name="app_name">LogAcceleration</string>
-    <string name="offset_on">Gravity Offset is ON</string>
-    <string name="offset_off">Gravity Offset is OFF</string>
     <string name="reset">Reset max/min</string>
     <string name="orientation_flat">Phone is Flat</string>
     <string name="orientation_upright">Phone is Upright</string>
     <string name="mode_circle">Drawing Circle</string>
     <string name="mode_graph">Drawing Graphs</string>
+    <string name="logging_off">Logging is OFF</string>
+    <string name="logging_on">Logging is ON</string>
 </resources>
