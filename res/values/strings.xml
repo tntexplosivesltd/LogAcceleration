@@ -9,6 +9,4 @@
     <string name="orientation_upright">Phone is Upright</string>
     <string name="mode_circle">Drawing Circle</string>
     <string name="mode_graph">Drawing Graphs</string>
-    <string name="mode_off">Graphs are Off</string>
-    <string name="show_on">Graphs are ON</string>
 </resources>

@@ -44,22 +44,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My_Tag");
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "LogAcceleration");
         sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
         setContentView(R.layout.main);
-        
-        output_x = (TextView) findViewById(R.id.x);
-        output_y = (TextView) findViewById(R.id.y);
-        output_z = (TextView) findViewById(R.id.z);
-        maximum_x = (TextView) findViewById(R.id.x_max);
-        maximum_y = (TextView) findViewById(R.id.y_max);
-        maximum_z = (TextView) findViewById(R.id.z_max);
-        minimum_x = (TextView) findViewById(R.id.x_min);
-        minimum_y = (TextView) findViewById(R.id.y_min);
-        minimum_z = (TextView) findViewById(R.id.z_min);
-        
-
-        
     }
     
     @Override
@@ -107,10 +94,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			else if (GraphData.z < GraphData.min_z)
     				GraphData.min_z = GraphData.z;
     			
-    			output_x.setText("x:" + String.format("%.2f%n", GraphData.x));
-    			output_y.setText("y:" + String.format("%.2f%n", GraphData.y));
-    			output_z.setText("z:" + String.format("%.2f%n", GraphData.z - GraphData.offset));
-    			
     			synchronized(GraphData.data_x)
     			{
     				GraphData.data_x.addLast(GraphData.x);
@@ -140,14 +123,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     					GraphData.data_z.poll();
     				}
     			}
-    			
-    			minimum_x.setText("min_x:" + String.format("%.2f%n", GraphData.min_x));
-    			minimum_y.setText("min_y:" + String.format("%.2f%n", GraphData.min_y));
-    			minimum_z.setText("min_z:" + String.format("%.2f%n", GraphData.min_z - GraphData.offset));
-    			
-    			maximum_x.setText("max_x:" + String.format("%.2f%n", GraphData.max_x));
-    			maximum_y.setText("max_y:" + String.format("%.2f%n", GraphData.max_y));
-    			maximum_z.setText("max_z:" + String.format("%.2f%n", GraphData.max_z - GraphData.offset));
     		}
     	}
     }
@@ -170,18 +145,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	{
 		switch (item.getItemId())
 		{
-		case R.id.z_offset:
-			if (GraphData.offset == 0)
-			{
-				GraphData.offset = 9.80665f;
-				item.setTitle(R.string.offset_on);
-			}
-			else
-			{
-				GraphData.offset = 0.f;
-				item.setTitle(R.string.offset_off);
-			}
-			return true;
 		case R.id.reset:
 			GraphData.reset();
 			return true;
@@ -209,8 +172,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 				item.setTitle(R.string.mode_circle);
 			}
 			return true;
-		case R.id.graphs:
-			GraphData.show = !GraphData.show;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

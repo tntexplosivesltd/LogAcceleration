@@ -4,45 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-    
-    <TableLayout android:id="@+id/tableLayout1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:stretchColumns="1">
-        <TableRow android:id="@+id/tableRow1" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <TextView
-				android:id="@+id/x"
-    			android:padding="3dip" />
-    		<TextView
-				android:id="@+id/x_min"
-				android:gravity="center" />
-    		<TextView
-				android:id="@+id/x_max"
-     			android:gravity="right"
-    			android:padding="3dip" /> 
-        </TableRow>
-        <TableRow android:id="@+id/tableRow2" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <TextView
-				android:id="@+id/y"
-    			android:padding="3dip" />
-    		<TextView
-				android:id="@+id/y_min"
-				android:gravity="center" />
-    		<TextView
-				android:id="@+id/y_max"
-     			android:gravity="right"
-    			android:padding="3dip" /> 
-        </TableRow>
-        <TableRow android:id="@+id/tableRow3" android:layout_width="fill_parent" android:layout_height="wrap_content">
-            <TextView
-				android:id="@+id/z"
-    			android:padding="3dip" />
-    		<TextView
-				android:id="@+id/z_min"
-				android:gravity="center" />
-    		<TextView
-				android:id="@+id/z_max"
-     			android:gravity="right"
-    			android:padding="3dip" /> 
-        </TableRow>
-    </TableLayout>
     <com.tntexplosivesltd.acceleration.Panel
     	android:id="@+id/SurfaceView01"
     	android:layout_width="wrap_content"
