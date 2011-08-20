@@ -1,8 +1,5 @@
 package com.tntexplosivesltd.acceleration;
 
-
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 // Hardware/accelerometer imports
@@ -23,15 +20,13 @@ import android.widget.Toast;
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
 	// "Primitive" types
+	int data_num;
 	String elements = new String();
-	
 	
 	PowerManager pm = null;
 	PowerManager.WakeLock wl = null;
 	SensorManager sensor_manager = null;
-	ArrayList<Float> to_log = new ArrayList<Float>();
 	Logger logger = new Logger();
-	int data_num;
 	
     /** Called when the activity is first created. */
     @Override
@@ -43,15 +38,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         setContentView(R.layout.main);
     }
     
-    /*
-    @Override
-    protected void onStart()
-    {
-        //Toast toast = Toast.makeText(getApplicationContext(), "I have started!", Toast.LENGTH_LONG);
-        //toast.show();
-    }
-    */
-    
     @Override
     protected void onResume()
     {
@@ -59,13 +45,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     	super.onResume();
     }
-    
-    /*
-    protected void onPause()
-    {
-    	logger.set_logging(false);
-    }
-    */
     
     @Override
     protected void onStop()
@@ -92,18 +71,19 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			{
     				if (logger.is_logging())
     				{
-    					to_log.clear();
-    					to_log.add((float)data_num);
-    					to_log.add(GraphData.x);
-    					to_log.add(GraphData.y);
-    					to_log.add(GraphData.z);
     					logger.busy = true;
     					Handler handler = new Handler();
     					handler.postDelayed(new Runnable()
     					{
     						public void run()
-    						{ logger.log(to_log);
-    						logger.busy = false;}
+    						{
+    							//logger.log(to_log);
+    							if (!logger.log(new float[]{(float)data_num,GraphData.x,GraphData.y,GraphData.z}))
+    							{
+    								logger.set_logging(false);
+    								Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
+    							}
+    							logger.busy = false;}
     						}, 100);
     					data_num++;
     				}
@@ -139,9 +119,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     				GraphData.data_y.addLast(GraphData.y);
     				elements="";
     				if (GraphData.data_y.size() > GraphData.max_data)
-    				{
     					GraphData.data_y.poll();
-    				}
     			}
     			
     			synchronized(GraphData.data_z)
@@ -149,9 +127,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     				GraphData.data_z.addLast(GraphData.z);
     				elements="";
     				if (GraphData.data_z.size() > GraphData.max_data)
-    				{
     					GraphData.data_z.poll();
-    				}
     			}
     		}
     	}
@@ -209,13 +185,13 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 				item.setTitle(R.string.logging_off);
 				data_num = 0;
 				GraphData.logged_values = 0;
+		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_LONG).show();
 			}
 			else
 			{
 				logger.set_logging(true);
 				String log_message = logger.initialize();
-		        Toast toast = Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG);
-		        toast.show();
+		        Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG).show();
 		        if (logger.is_logging())
 		        {
 		        	item.setTitle(R.string.logging_on);

@@ -13,4 +13,7 @@
 	<item
 		android:id="@+id/logging"
 		android:title="@string/logging_off"/>
+	<item
+		android:id="@+id/settings"
+		android:title="@string/settings"/>
 </menu>

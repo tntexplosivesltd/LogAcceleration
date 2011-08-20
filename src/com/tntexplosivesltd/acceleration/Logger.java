@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import android.os.Environment;
 import android.util.Log;
 
@@ -70,13 +69,13 @@ public class Logger {
 		}
 	}
 	
-	public boolean log(ArrayList<Float> data)
+	public boolean log(float[] entry)
 	{
 		if (_logging)
 		{
 			if (_can_log)
 			{
-				if (data.size() != 4)
+				if (entry.length != 4)
 				{
 					return false;
 				}
@@ -84,9 +83,9 @@ public class Logger {
 				{
 					_log_writer = new FileWriter(_root + _filename + _log_number + _ext, true);
 					BufferedWriter out = new BufferedWriter(_log_writer);
-					out.append((int)((float)data.get(0)) + _seperator + data.get(1).toString() + _seperator +data.get(2).toString() + _seperator +data.get(3).toString() + "\n");
+					out.append((int)entry[0] + _seperator + entry[1] + _seperator + entry[2] + _seperator + entry[3] + "\n");
 					out.close();
-					GraphData.logged_values = (int)((float)data.get(0));
+					GraphData.logged_values = (int)entry[0];
 				}
 				catch(IOException e)
 				{

@@ -101,13 +101,9 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 				if (GraphData.orientation == 0)
-				{
 					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.y*10, (20+GraphData.z)/10*circle_diameter*dip, circle_paint);
-				}
 				else
-				{
 					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.z*10, (20+GraphData.y)/10*circle_diameter*dip, circle_paint);
-				}
 			}
 			else
 			{
@@ -131,18 +127,17 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 				Float current;
 				float offset = ninth*2;
 				float g_scale = ninth/20;
+				canvas.drawLine(0f, offset - GraphData.max_x*g_scale, view_width, offset - GraphData.max_x*g_scale, extremes);
+				canvas.drawLine(0f, offset - GraphData.min_x*g_scale, view_width, offset - GraphData.min_x*g_scale, extremes);
 				synchronized(GraphData.data_x)
 				{
-					canvas.drawLine(0f, offset - GraphData.max_x*g_scale, view_width, offset - GraphData.max_x*g_scale, extremes);
-					canvas.drawLine(0f, offset - GraphData.min_x*g_scale, view_width, offset - GraphData.min_x*g_scale, extremes);
+					// Max/min lines
 					ListIterator<Float> x_itr = GraphData.data_x.listIterator();
 					while (x_itr.hasNext())
 					{
 						current = -x_itr.next();
 						if (num != 0)
-						{
 							canvas.drawLine((num-1)*g_width, offset + prev*g_scale, num*g_width, offset + current*g_scale, x_paint);
-						}
 						num++;
 						prev = current;
 					}
@@ -153,18 +148,16 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 				canvas.drawText("Y values (" + String.format("%.2f", GraphData.y) + ", min: " + String.format("%.2f", GraphData.min_y) + ", max: " + String.format("%.2f", GraphData.max_y) + ")", 20*dip, 3.75f*ninth, block_text);
 				offset = ninth * 5;
 				num = 0;
+				canvas.drawLine(0f, offset - GraphData.max_y*(g_scale), view_width, offset - GraphData.max_y*(g_scale), extremes);
+				canvas.drawLine(0f, offset - GraphData.min_y*(g_scale), view_width, offset - GraphData.min_y*(g_scale), extremes);
 				synchronized(GraphData.data_y)
 				{
-					canvas.drawLine(0f, offset - GraphData.max_y*(g_scale), view_width, offset - GraphData.max_y*(g_scale), extremes);
-					canvas.drawLine(0f, offset - GraphData.min_y*(g_scale), view_width, offset - GraphData.min_y*(g_scale), extremes);
 					ListIterator<Float> itr = GraphData.data_y.listIterator();
 					while (itr.hasNext())
 					{
 						current = -itr.next();
 						if (num != 0)
-						{
 							canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), y_paint);
-						}
 						num++;
 						prev = current;
 					}
@@ -175,18 +168,16 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 				canvas.drawText("Z values (" + String.format("%.2f", GraphData.z) + ", min: " + String.format("%.2f", GraphData.min_z) + ", max: " + String.format("%.2f", GraphData.max_z) + ")", 20*dip, 6.75f*ninth, block_text);
 				offset = ninth * 8f;
 				num = 0;
+				canvas.drawLine(0f, offset - GraphData.max_z*(g_scale), view_width, offset - GraphData.max_z*(g_scale), extremes);
+				canvas.drawLine(0f, offset - GraphData.min_z*(g_scale), view_width, offset - GraphData.min_z*(g_scale), extremes);
 				synchronized(GraphData.data_z)
 				{
-					canvas.drawLine(0f, offset - GraphData.max_z*(g_scale), view_width, offset - GraphData.max_z*(g_scale), extremes);
-					canvas.drawLine(0f, offset - GraphData.min_z*(g_scale), view_width, offset - GraphData.min_z*(g_scale), extremes);
 					ListIterator<Float> itr = GraphData.data_z.listIterator();
 					while (itr.hasNext())
 					{
 						current = -itr.next();
 						if (num != 0)
-						{
 							canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), z_paint);
-						}
 						num++;
 						prev = current;
 					}
