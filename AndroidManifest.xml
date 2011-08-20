@@ -9,13 +9,14 @@
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".LogAccelerationActivity"
-                  android:label="@string/app_name"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PreferencesActivity" />
 
     </application>
 </manifest>

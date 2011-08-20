@@ -1,3 +1,19 @@
+/*
+	This file is part of LogAcceleration.
+
+    LogAcceleration is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    LogAcceleration is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with LogAcceleration.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.tntexplosivesltd.acceleration;
 
 import java.util.ListIterator;
@@ -79,6 +95,8 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	{
 		float view_height = canvas.getHeight()*dip;
 		float view_width = canvas.getWidth()*dip; 
+		float half_height = view_height / 2;
+		float half_width = view_width / 2;
 		float ninth = view_height / 9;
 		float g_width = view_width / GraphData.max_data;
 		
@@ -101,9 +119,9 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 				if (GraphData.orientation == 0)
-					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.y*10, (20+GraphData.z)/10*circle_diameter*dip, circle_paint);
+					canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.y*half_height/20, (20+GraphData.z)/10*circle_diameter*dip, circle_paint);
 				else
-					canvas.drawCircle(view_width/2 - GraphData.x*10, view_height/2 + GraphData.z*10, (20+GraphData.y)/10*circle_diameter*dip, circle_paint);
+					canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.z*half_height/20, (20+GraphData.y)/10*circle_diameter*dip, circle_paint);
 			}
 			else
 			{

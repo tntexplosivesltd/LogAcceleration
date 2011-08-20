@@ -1,7 +1,24 @@
+/*
+	This file is part of LogAcceleration.
+
+    LogAcceleration is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    LogAcceleration is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with LogAcceleration.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.tntexplosivesltd.acceleration;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 // Hardware/accelerometer imports
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
@@ -198,6 +215,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		        	data_num = 0;
 		        }
 			}
+			return true;
+		case R.id.settings:
+			startActivity(new Intent(LogAccelerationActivity.this, PreferencesActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
