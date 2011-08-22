@@ -40,31 +40,11 @@ import android.widget.Toast;
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
-	// "Primitive" types
-	/**
-	 * @brief Number to write out with the corresponding point
-	 */
-	int data_num;
-	
-	/**
-	 * @brief Power manager to get access to WakeLock
-	 */
-	PowerManager pm = null;
-	
-	/**
-	 * @brief Wakelock so we can keep the screen on
-	 */
-	PowerManager.WakeLock wl = null;
-	
-	/**
-	 * @brief Sensor manager gives us access to the accelerometer
-	 */
-	SensorManager sensor_manager = null;
-	
-	/**
-	 * @brief Logger object to get access to all the logging functionalities
-	 */
-	Logger logger = new Logger();
+	private int data_num;
+	private PowerManager pm = null;
+	private PowerManager.WakeLock wl = null;
+	private SensorManager sensor_manager = null;
+	private Logger logger = new Logger();
 	
     /** 
      * @brief Called when the activity is first created.
