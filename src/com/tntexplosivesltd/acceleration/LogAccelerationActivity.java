@@ -34,18 +34,42 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+/**
+ * @brief Activity class for actually logging part of app
+ * @details This is the activity automatically started when the app starts 
+ */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
 	// "Primitive" types
+	/**
+	 * @brief Number to write out with the corresponding point
+	 */
 	int data_num;
-	String elements = new String();
 	
+	/**
+	 * @brief Power manager to get access to WakeLock
+	 */
 	PowerManager pm = null;
+	
+	/**
+	 * @brief Wakelock so we can keep the screen on
+	 */
 	PowerManager.WakeLock wl = null;
+	
+	/**
+	 * @brief Sensor manager gives us access to the accelerometer
+	 */
 	SensorManager sensor_manager = null;
+	
+	/**
+	 * @brief Logger object to get access to all the logging functionalities
+	 */
 	Logger logger = new Logger();
 	
-    /** Called when the activity is first created. */
+    /** 
+     * @brief Called when the activity is first created.
+     * @details sets up all the variables that need initialisation
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +79,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         setContentView(R.layout.main);
     }
     
+    /**
+     * @brief Gets called when app Resumes. Re-registers accelerometer as sensor
+     */
     @Override
     protected void onResume()
     {
@@ -63,6 +90,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	super.onResume();
     }
     
+    /**
+     * @brief Gets called when app Stops. Unregisters accelerometer as sensor
+     */
     @Override
     protected void onStop()
     {
@@ -71,6 +101,10 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	super.onStop();
     }
     
+    /**
+     * @brief Gets called when sensor value changes.
+     * @details This is where the logging takes place, and the value is changed for the graphs
+     */
     @Override
     public void onSensorChanged(SensorEvent event)
     {
@@ -84,11 +118,11 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			GraphData.y = event.values[1];
     			GraphData.z = event.values[2];
     			
-    			if (!logger.busy)
+    			if (!logger.is_busy())
     			{
     				if (logger.is_logging())
     				{
-    					logger.busy = true;
+    					logger.set_busy(true);
     					Handler handler = new Handler();
     					handler.postDelayed(new Runnable()
     					{
@@ -100,8 +134,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     								logger.set_logging(false);
     								Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
     							}
-    							logger.busy = false;}
-    						}, 100);
+    							logger.set_busy(false);
+    						}
+    					}, 100);
     					data_num++;
     				}
     			}
@@ -124,7 +159,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			synchronized(GraphData.data_x)
     			{
     				GraphData.data_x.addLast(GraphData.x);
-    				elements="";
     				if (GraphData.data_x.size() > GraphData.max_data)
     				{
     					GraphData.data_x.poll();
@@ -134,7 +168,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			synchronized(GraphData.data_y)
     			{
     				GraphData.data_y.addLast(GraphData.y);
-    				elements="";
     				if (GraphData.data_y.size() > GraphData.max_data)
     					GraphData.data_y.poll();
     			}
@@ -142,7 +175,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			synchronized(GraphData.data_z)
     			{
     				GraphData.data_z.addLast(GraphData.z);
-    				elements="";
     				if (GraphData.data_z.size() > GraphData.max_data)
     					GraphData.data_z.poll();
     			}
@@ -150,11 +182,17 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	}
     }
 
+    /**
+     * @brief Empty, needed for overriding
+     */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 	
 	
-	// Menu/Options
+    /**
+     * @brief Called when user presses "Menu" key
+     * @details Inflates the options menu
+     */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -163,6 +201,10 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		return true;
 	}
 	
+    /**
+     * @brief Gets called when one of the options menu items is selected
+     * @details Handles which item was pressed, and invokes actions based on that 
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -198,10 +240,12 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		case R.id.logging:
 			if (logger.is_logging())
 			{
+				/**
+				* @todo make it stop post-delayed (if possible) and wait til it's done.
+				*/
 				logger.set_logging(false);
 				item.setTitle(R.string.logging_off);
 				data_num = 0;
-				GraphData.logged_values = 0;
 		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_LONG).show();
 			}
 			else
@@ -209,6 +253,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 				logger.set_logging(true);
 				String log_message = logger.initialize();
 		        Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG).show();
+	        	logger.log_header();
 		        if (logger.is_logging())
 		        {
 		        	item.setTitle(R.string.logging_on);

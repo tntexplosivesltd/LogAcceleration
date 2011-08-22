@@ -26,62 +26,92 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+
+/**
+ * @brief Panel for handling canvas drawing, etc.
+ */
 public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 
-	
-	float dip = getContext().getResources().getDisplayMetrics().density;
-	CanvasThread canvas_thread;
+	private CanvasThread _canvas_thread;
 	// Draw stuff in here
-	Paint circle_paint = new Paint();
-	Paint line_paint = new Paint();
-	Paint block_paint = new Paint();
-	Paint block_text = new Paint();
-	Paint x_paint = new Paint();
-	Paint y_paint = new Paint();
-	Paint z_paint = new Paint();
-	Paint extremes = new Paint();
-	float graph_width = 2f;
-	float circle_diameter = 10f;
+	private Paint _circle_paint = new Paint();
+	private Paint _line_paint = new Paint();
+	private Paint _block_paint = new Paint();
+	private Paint _block_text = new Paint();
+	private Paint _x_paint = new Paint();
+	private Paint _y_paint = new Paint();
+	private Paint _z_paint = new Paint();
+	private Paint _extremes = new Paint();
+	private float _graph_width = 2f;
+	private float _circle_diameter = 10f;
 
+	/**
+	 * @brief Public constructor
+	 * @param context Current context - used for superclass
+	 * @param attrs Attribute set - used for superclass
+	 */
 	public Panel(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 		getHolder().addCallback(this);
 		setFocusable(true);
 	}
+	
+	/**
+	 * @brief SurfaceChanged called when the surface is changed. Needed for SurfaceView
+	 */
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		canvas_thread = new CanvasThread(getHolder(), this);
-		canvas_thread.set_running(true);
-		canvas_thread.start();
-		circle_paint.setColor(Color.BLUE);
-		line_paint.setColor(Color.GRAY);
-		block_paint.setColor(Color.LTGRAY);
-		block_text.setColor(Color.BLACK);
-		x_paint.setColor(Color.RED);
-		y_paint.setColor(Color.rgb(0, 127, 0));
-		z_paint.setColor(Color.BLUE);
-		extremes.setColor(Color.YELLOW);
-		x_paint.setStrokeWidth(graph_width);
-		y_paint.setStrokeWidth(graph_width);
-		z_paint.setStrokeWidth(graph_width);
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder arg0) {
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+	
+	/*
 		boolean retry = true;
-		canvas_thread.set_running(false);
+		_canvas_thread.set_running(false);
 		while (retry)
 		{
 			try
 			{
-				canvas_thread.join();
+				_canvas_thread.join();
+				retry = false;
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
+	 */
+
+	/**
+	 * @brief Called when the surface is created. Sets itinial variables like paints, and starts canvas thread.
+	 */
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		_canvas_thread = new CanvasThread(getHolder(), this);
+		_canvas_thread.set_running(true);
+		_canvas_thread.start();
+		_circle_paint.setColor(Color.BLUE);
+		_line_paint.setColor(Color.GRAY);
+		_block_paint.setColor(Color.LTGRAY);
+		_block_text.setColor(Color.BLACK);
+		_x_paint.setColor(Color.RED);
+		_y_paint.setColor(Color.rgb(0, 127, 0));
+		_z_paint.setColor(Color.BLUE);
+		_extremes.setColor(Color.YELLOW);
+		_x_paint.setStrokeWidth(_graph_width);
+		_y_paint.setStrokeWidth(_graph_width);
+		_z_paint.setStrokeWidth(_graph_width);
+	}
+
+	/**
+	 * @brief Called when the surface is destroyed. This is where the canvas thread is joined, so it can exit nicely.
+	 */
+	@Override
+	public void surfaceDestroyed(SurfaceHolder arg0) {
+		boolean retry = true;
+		_canvas_thread.set_running(false);
+		while (retry)
+		{
+			try
+			{
+				_canvas_thread.join();
 				retry = false;
 			}
 			catch (InterruptedException e)
@@ -90,11 +120,15 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * @brief called by the CanvasThread class. Draws the graphs with current values
+	 * @param canvas The canvas to draw on. 
+	 */
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		float view_height = canvas.getHeight()*dip;
-		float view_width = canvas.getWidth()*dip; 
+		float view_height = canvas.getHeight();
+		float view_width = canvas.getWidth(); 
 		float half_height = view_height / 2;
 		float half_width = view_width / 2;
 		float ninth = view_height / 9;
@@ -102,104 +136,104 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		
 		canvas.drawColor(Color.WHITE);
 		
-			if (GraphData.mode == 0)
+		if (GraphData.mode == 0)
+		{
+			// We're drawing circles
+			int lines = 20;
+			for (int i = 0; i <= lines; i++)
 			{
-				// We're drawing circles
-				int lines = 20;
-				for (int i = 0; i <= lines; i++)
+				// Draw Gridlines
+				canvas.drawLine(i*view_width/lines, 0, i*view_width/lines, view_height, _line_paint);
+				canvas.drawLine(0, i*view_height/lines, view_width, i*view_height/lines, _line_paint);
+				if ((i % 2) == 0)
 				{
-					// Draw Gridlines
-					canvas.drawLine(i*view_width/lines, 0, i*view_width/lines, view_height, line_paint);
-					canvas.drawLine(0, i*view_height/lines, view_width, i*view_height/lines, line_paint);
-					if ((i % 2) == 0)
-					{
-						// Draw value
-						canvas.drawText(String.format("%.1f", i*2/10f-2f), view_width/2, i*view_height/lines, line_paint);
-						canvas.drawText(String.format("%.1f", i*2/10f-2f), i*view_width/lines, view_height/2, line_paint);
-					}
+					// Draw value
+					canvas.drawText(String.format("%.1f", i*2/10f-2f), view_width/2, i*view_height/lines, _line_paint);
+					canvas.drawText(String.format("%.1f", i*2/10f-2f), i*view_width/lines, view_height/2, _line_paint);
 				}
-				if (GraphData.orientation == 0)
-					canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.y*half_height/20, (20+GraphData.z)/10*circle_diameter*dip, circle_paint);
-				else
-					canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.z*half_height/20, (20+GraphData.y)/10*circle_diameter*dip, circle_paint);
 			}
+			if (GraphData.orientation == 0)
+				canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.y*half_height/20, (20+GraphData.z)/10*_circle_diameter, _circle_paint);
 			else
+				canvas.drawCircle(half_width - GraphData.x*half_width/20, half_height + GraphData.z*half_height/20, (20+GraphData.y)/10*_circle_diameter, _circle_paint);
+		}
+		else
+		{
+			// We're drawing graphs
+			
+			// Draw gridlines
+			int lines = 18;
+			for (int i = 0; i < lines; i++)
 			{
-				// We're drawing graphs
-				
-				// Draw gridlines
-				int lines = 18;
-				for (int i = 0; i < lines; i++)
-				{
-					canvas.drawLine(i*view_width/lines, 0, i*view_width/lines, view_height, line_paint);
-					canvas.drawLine(0, i*view_height/lines, view_width, i*view_height/lines, line_paint);
-				}
+				canvas.drawLine(i*view_width/lines, 0, i*view_width/lines, view_height, _line_paint);
+				canvas.drawLine(0, i*view_height/lines, view_width, i*view_height/lines, _line_paint);
+			}
 
-				// Draw x
-				// Dividing block
-				canvas.drawRect(0f, 0f, view_width, ninth, block_paint);
-				// Values
-				canvas.drawText("X values (" + String.format("%.2f", GraphData.x) + ", min: " + String.format("%.2f", GraphData.min_x) + ", max: " + String.format("%.2f", GraphData.max_x) + ")", 20*dip, 0.75f*ninth, block_text);
-				int num = 0;
-				Float prev = 0f;
-				Float current;
-				float offset = ninth*2;
-				float g_scale = ninth/20;
-				canvas.drawLine(0f, offset - GraphData.max_x*g_scale, view_width, offset - GraphData.max_x*g_scale, extremes);
-				canvas.drawLine(0f, offset - GraphData.min_x*g_scale, view_width, offset - GraphData.min_x*g_scale, extremes);
-				synchronized(GraphData.data_x)
+			// Draw x
+			// Dividing block
+			canvas.drawRect(0f, 0f, view_width, ninth, _block_paint);
+			// Values
+			canvas.drawText("X values (" + String.format("%.2f", GraphData.x) + ", min: " + String.format("%.2f", GraphData.min_x) + ", max: " + String.format("%.2f", GraphData.max_x) + ")", 20, 0.75f*ninth, _block_text);
+			int num = 0;
+			Float prev = 0f;
+			Float current;
+			float offset = ninth*2;
+			float g_scale = ninth/20;
+			canvas.drawLine(0f, offset - GraphData.max_x*g_scale, view_width, offset - GraphData.max_x*g_scale, _extremes);
+			canvas.drawLine(0f, offset - GraphData.min_x*g_scale, view_width, offset - GraphData.min_x*g_scale, _extremes);
+			synchronized(GraphData.data_x)
+			{
+				// Max/min lines
+				ListIterator<Float> x_itr = GraphData.data_x.listIterator();
+				while (x_itr.hasNext())
 				{
-					// Max/min lines
-					ListIterator<Float> x_itr = GraphData.data_x.listIterator();
-					while (x_itr.hasNext())
-					{
-						current = -x_itr.next();
-						if (num != 0)
-							canvas.drawLine((num-1)*g_width, offset + prev*g_scale, num*g_width, offset + current*g_scale, x_paint);
-						num++;
-						prev = current;
-					}
-				}
-				
-				//Draw y
-				canvas.drawRect(0f, 3*ninth, view_width, 4*ninth, block_paint);
-				canvas.drawText("Y values (" + String.format("%.2f", GraphData.y) + ", min: " + String.format("%.2f", GraphData.min_y) + ", max: " + String.format("%.2f", GraphData.max_y) + ")", 20*dip, 3.75f*ninth, block_text);
-				offset = ninth * 5;
-				num = 0;
-				canvas.drawLine(0f, offset - GraphData.max_y*(g_scale), view_width, offset - GraphData.max_y*(g_scale), extremes);
-				canvas.drawLine(0f, offset - GraphData.min_y*(g_scale), view_width, offset - GraphData.min_y*(g_scale), extremes);
-				synchronized(GraphData.data_y)
-				{
-					ListIterator<Float> itr = GraphData.data_y.listIterator();
-					while (itr.hasNext())
-					{
-						current = -itr.next();
-						if (num != 0)
-							canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), y_paint);
-						num++;
-						prev = current;
-					}
-				}
-				
-				// Draw z
-				canvas.drawRect(0f, 6*ninth, view_width, 7*ninth, block_paint);
-				canvas.drawText("Z values (" + String.format("%.2f", GraphData.z) + ", min: " + String.format("%.2f", GraphData.min_z) + ", max: " + String.format("%.2f", GraphData.max_z) + ")", 20*dip, 6.75f*ninth, block_text);
-				offset = ninth * 8f;
-				num = 0;
-				canvas.drawLine(0f, offset - GraphData.max_z*(g_scale), view_width, offset - GraphData.max_z*(g_scale), extremes);
-				canvas.drawLine(0f, offset - GraphData.min_z*(g_scale), view_width, offset - GraphData.min_z*(g_scale), extremes);
-				synchronized(GraphData.data_z)
-				{
-					ListIterator<Float> itr = GraphData.data_z.listIterator();
-					while (itr.hasNext())
-					{
-						current = -itr.next();
-						if (num != 0)
-							canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), z_paint);
-						num++;
-						prev = current;
-					}
+					current = -x_itr.next();
+					if (num != 0)
+						canvas.drawLine((num-1)*g_width, offset + prev*g_scale, num*g_width, offset + current*g_scale, _x_paint);
+					num++;
+					prev = current;
 				}
 			}
+			
+			// Draw y
+			canvas.drawRect(0f, 3*ninth, view_width, 4*ninth, _block_paint);
+			canvas.drawText("Y values (" + String.format("%.2f", GraphData.y) + ", min: " + String.format("%.2f", GraphData.min_y) + ", max: " + String.format("%.2f", GraphData.max_y) + ")", 20, 3.75f*ninth, _block_text);
+			offset = ninth * 5;
+			num = 0;
+			canvas.drawLine(0f, offset - GraphData.max_y*(g_scale), view_width, offset - GraphData.max_y*(g_scale), _extremes);
+			canvas.drawLine(0f, offset - GraphData.min_y*(g_scale), view_width, offset - GraphData.min_y*(g_scale), _extremes);
+			synchronized(GraphData.data_y)
+			{
+				ListIterator<Float> itr = GraphData.data_y.listIterator();
+				while (itr.hasNext())
+				{
+					current = -itr.next();
+					if (num != 0)
+						canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), _y_paint);
+					num++;
+					prev = current;
+				}
+			}
+			
+			// Draw z
+			canvas.drawRect(0f, 6*ninth, view_width, 7*ninth, _block_paint);
+			canvas.drawText("Z values (" + String.format("%.2f", GraphData.z) + ", min: " + String.format("%.2f", GraphData.min_z) + ", max: " + String.format("%.2f", GraphData.max_z) + ")", 20, 6.75f*ninth, _block_text);
+			offset = ninth * 8f;
+			num = 0;
+			canvas.drawLine(0f, offset - GraphData.max_z*(g_scale), view_width, offset - GraphData.max_z*(g_scale), _extremes);
+			canvas.drawLine(0f, offset - GraphData.min_z*(g_scale), view_width, offset - GraphData.min_z*(g_scale), _extremes);
+			synchronized(GraphData.data_z)
+			{
+				ListIterator<Float> itr = GraphData.data_z.listIterator();
+				while (itr.hasNext())
+				{
+					current = -itr.next();
+					if (num != 0)
+						canvas.drawLine((num-1)*g_width, offset + prev*(g_scale), num*g_width, offset + current*(g_scale), _z_paint);
+					num++;
+					prev = current;
+				}
+			}
+		}
 	}
 }

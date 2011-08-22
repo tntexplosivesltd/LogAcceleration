@@ -19,7 +19,13 @@ package com.tntexplosivesltd.acceleration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+/**
+ * @brief Preferences activity that gets launched when "Settings" is pressed
+ */
 public class PreferencesActivity extends PreferenceActivity {
+	/**
+	 * @brief Sets what the PreferencesActivity looks like.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{

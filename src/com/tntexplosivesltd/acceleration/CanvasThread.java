@@ -19,27 +19,47 @@ package com.tntexplosivesltd.acceleration;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+/**
+ * @brief Handles thread for drawing on the canvas
+ */
 public class CanvasThread extends Thread {
 	private SurfaceHolder _surface_holder;
 	private Panel _panel;
 	private boolean _run = false;
 	
+	/**
+	 * @brief Constructor for the CanvasThread class 
+	 * @param holder SurfaceHolder that we can get a canvas from
+	 * @param panel Instance of Panel class to pass the canvas to
+	 */
 	public CanvasThread(SurfaceHolder holder, Panel panel)
 	{
 		_surface_holder = holder;
 		_panel = panel;
 	}
 	
+	/**
+	 * @brief Sets whether the canvas drawing thread is running or not
+	 * @param run Whether the thread is running
+	 */
 	public void set_running(boolean run)
 	{
 		_run = run;
 	}
 	
+	/**
+	 * @brief Retrieves whether or not the drawing thread is running
+	 * @return Set whether or not to draw the graphs on the canvas
+	 */
 	public boolean is_running()
 	{
 		return _run;
 	}
 	
+	/**
+	 * @brief Override method that is used my the thread.
+	 * @details What to do when the thread runs. While the thread is running, it draws on the canvas. Otherwise, it unlocks and tidies up.
+	 */
 	@Override
 	public void run()
 	{
