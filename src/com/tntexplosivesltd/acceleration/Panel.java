@@ -148,8 +148,8 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 				if ((i % 2) == 0)
 				{
 					// Draw value
-					canvas.drawText(String.format("%.1f", i*2/10f-2f), view_width/2, i*view_height/lines, _line_paint);
-					canvas.drawText(String.format("%.1f", i*2/10f-2f), i*view_width/lines, view_height/2, _line_paint);
+					canvas.drawText(String.format("%.0f", i*2-20f), view_width/2, i*view_height/lines, _line_paint);
+					canvas.drawText(String.format("%.0f", i*2-20f), i*view_width/lines, view_height/2, _line_paint);
 				}
 			}
 			if (GraphData.orientation == 0)
@@ -184,10 +184,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 			synchronized(GraphData.data_x)
 			{
 				// Max/min lines
-				ListIterator<Float> x_itr = GraphData.data_x.listIterator();
-				while (x_itr.hasNext())
+				ListIterator<Float> itr = GraphData.data_x.listIterator();
+				while (itr.hasNext())
 				{
-					current = -x_itr.next();
+					current = -itr.next();
 					if (num != 0)
 						canvas.drawLine((num-1)*g_width, offset + prev*g_scale, num*g_width, offset + current*g_scale, _x_paint);
 					num++;

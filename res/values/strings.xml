@@ -14,6 +14,6 @@
     <string name="settings">Settings...</string>
     
     <!-- Preferences Strings -->
-    <string name="log_pref_title">Logging Interval</string>
-    <string name="log_pref_desc">How often do you want the value saved to file?</string>
+    <string name="delay_pref_title">Logging Interval</string>
+    <string name="delay_pref_desc">How often do you want the value saved to file?</string>
 </resources>

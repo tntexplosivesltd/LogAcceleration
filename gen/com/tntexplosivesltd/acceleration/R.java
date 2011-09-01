@@ -35,11 +35,11 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f060001;
-        public static final int hello=0x7f060000;
-        public static final int log_pref_desc=0x7f06000b;
+        public static final int delay_pref_desc=0x7f06000b;
         /**  Preferences Strings 
          */
-        public static final int log_pref_title=0x7f06000a;
+        public static final int delay_pref_title=0x7f06000a;
+        public static final int hello=0x7f060000;
         /**  Strings for OptionsMenu 
          */
         public static final int logging_off=0x7f060002;

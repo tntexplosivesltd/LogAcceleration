@@ -4,7 +4,7 @@
 	android:title="Settings">
     <ListPreference android:entries="@array/interval_display"
     				android:entryValues="@array/interval_return"
-    				android:title="@string/log_pref_title"
-    				android:key="log_pref"
-    				android:summary="@string/log_pref_desc" />
+    				android:title="@string/delay_pref_title"
+    				android:key="log_delay_pref"
+    				android:summary="@string/delay_pref_desc" />
 </PreferenceScreen>

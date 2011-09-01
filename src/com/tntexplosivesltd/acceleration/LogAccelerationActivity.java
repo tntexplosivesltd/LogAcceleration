@@ -17,8 +17,12 @@
 package com.tntexplosivesltd.acceleration;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 // Hardware/accelerometer imports
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
@@ -28,6 +32,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 // View-related stuff
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,11 +45,15 @@ import android.widget.Toast;
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
-	private int data_num;
-	private PowerManager pm = null;
-	private PowerManager.WakeLock wl = null;
-	private SensorManager sensor_manager = null;
-	private Logger logger = new Logger();
+	private int _data_num;
+	private int _delay = 100;
+	private PowerManager _pm = null;
+	private PowerManager.WakeLock _wl = null;
+	private SensorManager _sensor_manager = null;
+	private Logger _logger = new Logger();
+	private AlertDialog.Builder _builder;
+	private AlertDialog _alert;
+	
 	
     /** 
      * @brief Called when the activity is first created.
@@ -53,32 +62,57 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "LogAcceleration");
-        sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        _pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        _wl = _pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "LogAcceleration");
+        _sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        
+        /*
+    	_builder = new AlertDialog.Builder(getApplicationContext());
+    	_builder.setMessage("Restart logging to new file?");
+    	_builder.setCancelable(false);
+    	_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			//@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+    	_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			//@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+    	_alert = _builder.create();
+    	_alert.setOwnerActivity(this);
+    	*/
+    	
         setContentView(R.layout.main);
     }
     
     /**
-     * @brief Gets called when app Resumes. Re-registers accelerometer as sensor
+     * @brief Gets called when app Resumes.
+     * @details Re-registers the accelerometer as a sensor, gets the wake-lock and manages setting values from the preferences. 
      */
     @Override
     protected void onResume()
     {
-    	wl.acquire();
-    	sensor_manager.registerListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     	super.onResume();
+    	_wl.acquire();
+    	SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    	String delay_preference_string = preferences.getString("log_delay_pref", "100");
+    	_delay = Integer.parseInt(delay_preference_string);
+    	//Toast.makeText(getApplicationContext(), delay_preference_string, Toast.LENGTH_LONG).show();
+    	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     }
     
     /**
-     * @brief Gets called when app Stops. Unregisters accelerometer as sensor
+     * @brief Gets called when app Stops.
+     * Unregisters accelerometer as sensor, and removes the wake lock.
      */
     @Override
     protected void onStop()
     {
-    	wl.release();
-    	sensor_manager.unregisterListener(this, sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
     	super.onStop();
+    	_wl.release();
+    	_sensor_manager.unregisterListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
     }
     
     /**
@@ -98,26 +132,29 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     			GraphData.y = event.values[1];
     			GraphData.z = event.values[2];
     			
-    			if (!logger.is_busy())
+    			if (!_logger.is_busy())
     			{
-    				if (logger.is_logging())
+    				if (_logger.is_logging())
     				{
-    					logger.set_busy(true);
+    					_logger.set_busy(true);
     					Handler handler = new Handler();
     					handler.postDelayed(new Runnable()
     					{
     						public void run()
     						{
-    							//logger.log(to_log);
-    							if (!logger.log(new float[]{(float)data_num,GraphData.x,GraphData.y,GraphData.z}))
+    							if (_logger.is_logging())
     							{
-    								logger.set_logging(false);
-    								Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
+    								//_logger.log(to_log);
+    								if (!_logger.log(new float[]{(float)_data_num,GraphData.x,GraphData.y,GraphData.z}))
+    								{
+    									_logger.set_logging(false);
+    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
+    								}
+    								_logger.set_busy(false);
     							}
-    							logger.set_busy(false);
     						}
-    					}, 100);
-    					data_num++;
+    					}, _delay);
+    					_data_num++;
     				}
     			}
     			
@@ -218,26 +255,26 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			}
 			return true;
 		case R.id.logging:
-			if (logger.is_logging())
+			if (_logger.is_logging())
 			{
 				/**
 				* @todo make it stop post-delayed (if possible) and wait til it's done.
 				*/
-				logger.set_logging(false);
+				_logger.set_logging(false);
 				item.setTitle(R.string.logging_off);
-				data_num = 0;
+				_data_num = 0;
 		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_LONG).show();
 			}
 			else
 			{
-				logger.set_logging(true);
-				String log_message = logger.initialize();
+				_logger.set_logging(true);
+				String log_message = _logger.initialize();
 		        Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG).show();
-	        	logger.log_header();
-		        if (logger.is_logging())
+	        	_logger.log_header();
+		        if (_logger.is_logging())
 		        {
 		        	item.setTitle(R.string.logging_on);
-		        	data_num = 0;
+		        	_data_num = 0;
 		        }
 			}
 			return true;
