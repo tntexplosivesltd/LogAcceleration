@@ -16,9 +16,11 @@
  */
 package com.tntexplosivesltd.acceleration;
 
+// Activity and dialog stuff
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+// App mechanics related stuff
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +34,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+// Preference-related stuff
 import android.preference.PreferenceManager;
 // View-related stuff
 import android.view.Menu;
@@ -45,14 +48,21 @@ import android.widget.Toast;
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
+	private boolean _first_run = true;
+	private boolean _paused = false;
 	private int _data_num;
 	private int _delay = 100;
+	private int _prev_delay = 0;
+	
+	private Handler _handler = new Handler();
+	private Logger _logger = new Logger();
 	private PowerManager _pm = null;
 	private PowerManager.WakeLock _wl = null;
+	private Runnable _logging_task = null;
 	private SensorManager _sensor_manager = null;
-	private Logger _logger = new Logger();
-	private AlertDialog.Builder _builder;
-	private AlertDialog _alert;
+	
+	// "Constants" for dialog types 
+	static final int RESET_DIALOG = 0;
 	
 	
     /** 
@@ -65,25 +75,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         _pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         _wl = _pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "LogAcceleration");
         _sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        
-        /*
-    	_builder = new AlertDialog.Builder(getApplicationContext());
-    	_builder.setMessage("Restart logging to new file?");
-    	_builder.setCancelable(false);
-    	_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			//@Override
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-    	_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			//@Override
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-    	_alert = _builder.create();
-    	_alert.setOwnerActivity(this);
-    	*/
-    	
         setContentView(R.layout.main);
     }
     
@@ -99,7 +90,25 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     	String delay_preference_string = preferences.getString("log_delay_pref", "100");
     	_delay = Integer.parseInt(delay_preference_string);
+    	if (_first_run)
+    	{
+    		_prev_delay = _delay; 
+    	}
+    	else
+    	{
+    		if (_delay != _prev_delay)
+    		{
+    			if (_logger.is_logging())
+    			{
+    				showDialog(RESET_DIALOG);
+    				_paused = true;
+    			}
+    			_prev_delay = _delay;
+    		}
+    	}
+    	_first_run = false;
     	//Toast.makeText(getApplicationContext(), delay_preference_string, Toast.LENGTH_LONG).show();
+    	//showDialog(RESET_DIALOG);
     	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     }
     
@@ -122,80 +131,83 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-    	synchronized (this)
+    	if (!_paused)
     	{
-    		switch (event.sensor.getType())
-    		{
-    		case Sensor.TYPE_ACCELEROMETER:
-
-    			GraphData.x = event.values[0];
-    			GraphData.y = event.values[1];
-    			GraphData.z = event.values[2];
-    			
-    			if (!_logger.is_busy())
-    			{
-    				if (_logger.is_logging())
-    				{
-    					_logger.set_busy(true);
-    					Handler handler = new Handler();
-    					handler.postDelayed(new Runnable()
-    					{
-    						public void run()
-    						{
-    							if (_logger.is_logging())
-    							{
-    								//_logger.log(to_log);
-    								if (!_logger.log(new float[]{(float)_data_num,GraphData.x,GraphData.y,GraphData.z}))
-    								{
-    									_logger.set_logging(false);
-    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
-    								}
-    								_logger.set_busy(false);
-    							}
-    						}
-    					}, _delay);
-    					_data_num++;
-    				}
-    			}
-    			
-    			if (GraphData.x > GraphData.max_x)
-    				GraphData.max_x = GraphData.x;
-    			else if (GraphData.x < GraphData.min_x)
-    				GraphData.min_x = GraphData.x;
-
-    			if (GraphData.y > GraphData.max_y)
-    				GraphData.max_y = GraphData.y;
-    			else if (GraphData.y < GraphData.min_y)
-    				GraphData.min_y = GraphData.y;
-    			
-    			if (GraphData.z > GraphData.max_z)
-    				GraphData.max_z = GraphData.z;
-    			else if (GraphData.z < GraphData.min_z)
-    				GraphData.min_z = GraphData.z;
-    			
-    			synchronized(GraphData.data_x)
-    			{
-    				GraphData.data_x.addLast(GraphData.x);
-    				if (GraphData.data_x.size() > GraphData.max_data)
-    				{
-    					GraphData.data_x.poll();
-    				}
-    			}
-    			
-    			synchronized(GraphData.data_y)
-    			{
-    				GraphData.data_y.addLast(GraphData.y);
-    				if (GraphData.data_y.size() > GraphData.max_data)
-    					GraphData.data_y.poll();
-    			}
-    			
-    			synchronized(GraphData.data_z)
-    			{
-    				GraphData.data_z.addLast(GraphData.z);
-    				if (GraphData.data_z.size() > GraphData.max_data)
-    					GraphData.data_z.poll();
-    			}
-    		}
+	    	synchronized (this)
+	    	{
+	    		switch (event.sensor.getType())
+	    		{
+	    		case Sensor.TYPE_ACCELEROMETER:
+	
+	    			GraphData.x = event.values[0];
+	    			GraphData.y = event.values[1];
+	    			GraphData.z = event.values[2];
+	    			
+	    			if (!_logger.is_busy())
+	    			{
+	    				if (_logger.is_logging())
+	    				{
+	    					_logger.set_busy(true);
+	    					_logging_task = new Runnable()
+	    					{
+	    						public void run()
+	    						{
+	    							if (_logger.is_logging())
+	    							{
+	    								if (!_logger.log(new float[]{(float)_data_num,GraphData.x,GraphData.y,GraphData.z}))
+	    								{
+	    									_logger.set_logging(false);
+	    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
+	    								}
+	    								_logger.set_busy(false);
+	    							}
+	    						}
+	    					};
+	    					synchronized (_handler)
+	    					{
+		    					_handler.postDelayed(_logging_task, _delay);
+	    					}
+	    					_data_num++;
+	    				}
+	    			}
+	    			
+	    			if (GraphData.x > GraphData.max_x)
+	    				GraphData.max_x = GraphData.x;
+	    			else if (GraphData.x < GraphData.min_x)
+	    				GraphData.min_x = GraphData.x;
+	
+	    			if (GraphData.y > GraphData.max_y)
+	    				GraphData.max_y = GraphData.y;
+	    			else if (GraphData.y < GraphData.min_y)
+	    				GraphData.min_y = GraphData.y;
+	    			
+	    			if (GraphData.z > GraphData.max_z)
+	    				GraphData.max_z = GraphData.z;
+	    			else if (GraphData.z < GraphData.min_z)
+	    				GraphData.min_z = GraphData.z;
+	    			
+	    			synchronized(GraphData.data_x)
+	    			{
+	    				GraphData.data_x.addLast(GraphData.x);
+	    				if (GraphData.data_x.size() > GraphData.max_data)
+	    					GraphData.data_x.poll();
+	    			}
+	    			
+	    			synchronized(GraphData.data_y)
+	    			{
+	    				GraphData.data_y.addLast(GraphData.y);
+	    				if (GraphData.data_y.size() > GraphData.max_data)
+	    					GraphData.data_y.poll();
+	    			}
+	    			
+	    			synchronized(GraphData.data_z)
+	    			{
+	    				GraphData.data_z.addLast(GraphData.z);
+	    				if (GraphData.data_z.size() > GraphData.max_data)
+	    					GraphData.data_z.poll();
+	    			}
+	    		}
+	    	}
     	}
     }
 
@@ -227,9 +239,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	{
 		switch (item.getItemId())
 		{
-		case R.id.reset:
-			GraphData.reset();
-			return true;
 		case R.id.orientation:
 			if (GraphData.orientation == 0)
 			{
@@ -257,9 +266,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		case R.id.logging:
 			if (_logger.is_logging())
 			{
-				/**
-				* @todo make it stop post-delayed (if possible) and wait til it's done.
-				*/
 				_logger.set_logging(false);
 				item.setTitle(R.string.logging_off);
 				_data_num = 0;
@@ -267,15 +273,8 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			}
 			else
 			{
-				_logger.set_logging(true);
-				String log_message = _logger.initialize();
-		        Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG).show();
-	        	_logger.log_header();
-		        if (_logger.is_logging())
-		        {
+				if (start_logging())
 		        	item.setTitle(R.string.logging_on);
-		        	_data_num = 0;
-		        }
 			}
 			return true;
 		case R.id.settings:
@@ -284,5 +283,60 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	protected Dialog onCreateDialog(int id)
+	{
+		Dialog dialog;
+		switch(id)
+		{
+		case RESET_DIALOG:
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    	builder.setMessage("Restart logging to new file?")
+	    		   .setCancelable(false)
+	    		   .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+	    	{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					// Reset logging, and clear all waiting tasks.
+					synchronized (_handler)
+					{
+						_handler.removeCallbacks(_logging_task);
+						start_logging();
+					}
+					_paused = false;
+				}
+			});
+	    	builder.setNegativeButton("No", new DialogInterface.OnClickListener()
+	    	{
+				public void onClick(DialogInterface dialog, int which)
+				{
+					_paused = false;
+				}
+			});
+	    	dialog = builder.create();
+			break;
+		default:
+			dialog = null;
+		}
+		return dialog;
+	}
+	
+	/**
+	 * @brief Starts logging acceleration values to a new file
+	 * @return
+	 */
+	private boolean start_logging()
+	{
+		_logger.set_logging(true);
+		String log_message = _logger.initialize();
+        Toast.makeText(getApplicationContext(), log_message, Toast.LENGTH_LONG).show();
+    	_logger.log_header();
+        if (_logger.is_logging())
+        {
+        	_data_num = 0;
+        	return true;
+        }
+        return false;
 	}
 }

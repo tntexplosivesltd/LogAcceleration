@@ -10,7 +10,6 @@
     <string name="mode_graph">Draw Circle</string>
     <string name="orientation_flat">Change to Upright</string>
     <string name="orientation_upright">Change to Lying Flat</string>
-    <string name="reset">Reset max/min</string>
     <string name="settings">Settings...</string>
     
     <!-- Preferences Strings -->
