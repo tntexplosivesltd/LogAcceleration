@@ -22,6 +22,9 @@ import android.graphics.Color;
  */
 public class ColourManager {
 	
+	/**
+	 * @brief Whether or not the colours were reset to their default values. 
+	 */
 	public static boolean was_reset = false;
 	
 	/**
