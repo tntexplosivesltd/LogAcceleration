@@ -24,9 +24,9 @@ public class ColourManager {
 	
 	/**
 	 * @brief Array of colours to use in drawing.
-	 * @details Only built-in android colours.
+	 * @details Integer values obtained through android.graphics.Color.
 	 */
-	public static int[] colours = {Color.WHITE, Color.LTGRAY, Color.BLUE, Color.GRAY, Color.YELLOW, Color.BLACK, Color.RED, Color.GREEN, Color.BLUE};
+	public static Integer[] colours = {Color.WHITE, Color.LTGRAY, Color.BLUE, Color.GRAY, Color.YELLOW, Color.BLACK, Color.RED, Color.GREEN, Color.BLUE};
 
 	/**
 	 * @brief Available colour palette.
@@ -34,9 +34,11 @@ public class ColourManager {
 	 */
 	public static int[] palette = {Color.BLACK, Color.rgb(127, 127, 255), Color.BLUE,Color.rgb(0, 0, 127), Color.CYAN, Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.rgb(127,255,127), Color.GREEN, Color.rgb(0, 127, 0), Color.rgb(255, 127, 127), Color.RED, Color.rgb(127, 0, 0), Color.WHITE, Color.YELLOW};
 	
+	private static Integer[] _defaults = colours.clone();
+	
 	/**
 	 * @brief Sets the colours to use for drawing.
-	 * @details All colours are passes as integers, obtained through android.graphics.Color.
+	 * @details All colours are passed as integers, obtained through android.graphics.Color.
 	 * @param background Background graph colour.
 	 * @param boxes Colour of the text boxes.
 	 * @param circle Colour of the circle on the XY-plane graph.
@@ -58,5 +60,13 @@ public class ColourManager {
 		colours[6] = x;
 		colours[7] = y;
 		colours[8] = z;
+	}
+	
+	/**
+	 * @brief resets all colours to their default values
+	 */
+	public static void reset()
+	{
+		colours = _defaults.clone();
 	}
 }

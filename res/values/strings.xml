@@ -17,4 +17,24 @@
     <string name="delay_pref_desc">How often do you want the value saved to file?</string>
     <string name="seperator_pref_title">Log Seperator</string>
     <string name="seperator_pref_desc">Seperator character to use between log values</string>
+    
+    <!-- Colour preferences -->
+    <string name="bg_pref_title">Background Colour</string>
+    <string name="bg_pref_desc">Colour of the graph background</string>
+    <string name="box_pref_title">Text Box Colour</string>
+    <string name="box_pref_desc">Colour of the graph text boxes</string>
+    <string name="circle_pref_title">Circle Colour</string>
+    <string name="circle_pref_desc">Colour of the circle in the XY-plane graph</string>
+    <string name="grid_pref_title">Grid Colour</string>
+    <string name="grid_pref_desc">Colour of the graph grid and text</string>
+    <string name="minmax_pref_title">Min/Max Colour</string>
+    <string name="minmax_pref_desc">Colour of the graph min/max lines</string>
+    <string name="text_pref_title">Text Colour</string>
+    <string name="text_pref_desc">Colour of the text in the graph text boxes</string>
+    <string name="x_pref_title">X-axis Colour</string>
+    <string name="x_pref_desc">Colour of the X-axis graph</string>
+    <string name="y_pref_title">Y-axis Colour</string>
+    <string name="y_pref_desc">Colour of the Y-axis graph</string>
+    <string name="z_pref_title">Z-axis Colour</string>
+    <string name="z_pref_desc">Colour of the Z-axis graph</string>
 </resources>

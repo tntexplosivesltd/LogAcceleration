@@ -47,7 +47,6 @@ import android.widget.Toast;
  * @details This is the activity automatically started when the app starts. 
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
-	
 	private boolean _first_run = true;
 	private boolean _paused = false;
 	private int _time;
@@ -63,9 +62,9 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	private Runnable _logging_task = null;
 	private SensorManager _sensor_manager = null;
 	
-	// "Constants" for dialog types 
+	// "Constants" 
+	static final boolean DEBUG = false;
 	static final int RESET_DIALOG = 0;
-	
 	
     /** 
      * @brief Called when the activity is first created.
@@ -97,6 +96,10 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	_seperator = seperator_preference_string;
     	_logger.set_seperator(_seperator);
     	
+    	// Set the colours from the preferences
+    	ColourManager.set_colours(ColourManager.palette[Integer.parseInt(preferences.getString("bg_pref", "14"))], ColourManager.palette[Integer.parseInt(preferences.getString("box_pref", "5"))], ColourManager.palette[Integer.parseInt(preferences.getString("circle_pref", "2"))], ColourManager.palette[Integer.parseInt(preferences.getString("grid_pref", "6"))], ColourManager.palette[Integer.parseInt(preferences.getString("minmax_pref", "15"))], ColourManager.palette[Integer.parseInt(preferences.getString("text_pref", "0"))], ColourManager.palette[Integer.parseInt(preferences.getString("x_pref", "12"))], ColourManager.palette[Integer.parseInt(preferences.getString("y_pref", "10"))], ColourManager.palette[Integer.parseInt(preferences.getString("z_pref", "2"))]);
+    	Panel.refresh_colours();
+    	
     	if (_first_run)
     	{
     		_prev_delay = _delay;
@@ -116,7 +119,12 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     		}
     	}
     	_first_run = false;
-    	Toast.makeText(getApplicationContext(), seperator_preference_string, Toast.LENGTH_LONG).show();
+    	if (DEBUG)
+    	{
+    		Toast.makeText(getApplicationContext(), preferences.getString("circle_pref", "2"), Toast.LENGTH_LONG).show();
+    		Toast.makeText(getApplicationContext(), delay_preference_string, Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getApplicationContext(), seperator_preference_string, Toast.LENGTH_SHORT).show();
+    	}
     	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     }
     
