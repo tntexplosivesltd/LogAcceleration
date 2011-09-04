@@ -43,16 +43,18 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
- * @brief Activity class for actually logging part of app
- * @details This is the activity automatically started when the app starts 
+ * @brief Activity class for actually logging part of app.
+ * @details This is the activity automatically started when the app starts. 
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
 	
 	private boolean _first_run = true;
 	private boolean _paused = false;
-	private int _data_num;
+	private int _time;
 	private int _delay = 100;
 	private int _prev_delay = 0;
+	private String _seperator = ",";
+	private String _prev_seperator = "";
 	
 	private Handler _handler = new Handler();
 	private Logger _logger = new Logger();
@@ -67,7 +69,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	
     /** 
      * @brief Called when the activity is first created.
-     * @details sets up all the variables that need initialisation
+     * @details sets up all the variables that need initialisation.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
         _pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         _wl = _pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "LogAcceleration");
         _sensor_manager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setContentView(R.layout.main);
     }
     
@@ -89,14 +92,19 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	_wl.acquire();
     	SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     	String delay_preference_string = preferences.getString("log_delay_pref", "100");
+    	String seperator_preference_string = preferences.getString("seperator_pref", ",");
     	_delay = Integer.parseInt(delay_preference_string);
+    	_seperator = seperator_preference_string;
+    	_logger.set_seperator(_seperator);
+    	
     	if (_first_run)
     	{
-    		_prev_delay = _delay; 
+    		_prev_delay = _delay;
+    		_prev_seperator = _seperator;
     	}
     	else
     	{
-    		if (_delay != _prev_delay)
+    		if ((_delay != _prev_delay) || (_seperator != _prev_seperator))
     		{
     			if (_logger.is_logging())
     			{
@@ -104,11 +112,11 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     				_paused = true;
     			}
     			_prev_delay = _delay;
+    			_prev_seperator = _seperator;
     		}
     	}
     	_first_run = false;
-    	//Toast.makeText(getApplicationContext(), delay_preference_string, Toast.LENGTH_LONG).show();
-    	//showDialog(RESET_DIALOG);
+    	Toast.makeText(getApplicationContext(), seperator_preference_string, Toast.LENGTH_LONG).show();
     	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     }
     
@@ -126,7 +134,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     
     /**
      * @brief Gets called when sensor value changes.
-     * @details This is where the logging takes place, and the value is changed for the graphs
+     * @details This is where the logging takes place, and the value is changed for the graphs.
      */
     @Override
     public void onSensorChanged(SensorEvent event)
@@ -154,7 +162,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    						{
 	    							if (_logger.is_logging())
 	    							{
-	    								if (!_logger.log(new float[]{(float)_data_num,GraphData.x,GraphData.y,GraphData.z}))
+	    								if (!_logger.log(new float[]{(float)_time,GraphData.x,GraphData.y,GraphData.z}))
 	    								{
 	    									_logger.set_logging(false);
 	    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
@@ -167,7 +175,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    					{
 		    					_handler.postDelayed(_logging_task, _delay);
 	    					}
-	    					_data_num++;
+	    					_time += _delay;
 	    				}
 	    			}
 	    			
@@ -212,15 +220,15 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     }
 
     /**
-     * @brief Empty, needed for overriding
+     * @brief Empty, needed for overriding.
      */
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 	
 	
     /**
-     * @brief Called when user presses "Menu" key
-     * @details Inflates the options menu
+     * @brief Called when user presses "Menu" key.
+     * @details Inflates the options menu.
      */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -231,8 +239,8 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	}
 	
     /**
-     * @brief Gets called when one of the options menu items is selected
-     * @details Handles which item was pressed, and invokes actions based on that 
+     * @brief Gets called when one of the options menu items is selected.
+     * @details Handles which item was pressed, and invokes actions based on that. 
      */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -268,7 +276,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			{
 				_logger.set_logging(false);
 				item.setTitle(R.string.logging_off);
-				_data_num = 0;
+				_time = 0;
 		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_LONG).show();
 			}
 			else
@@ -323,8 +331,8 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	}
 	
 	/**
-	 * @brief Starts logging acceleration values to a new file
-	 * @return
+	 * @brief Starts logging acceleration values to a new file.
+	 * @return Whether or not the new log opened properly. 
 	 */
 	private boolean start_logging()
 	{
@@ -334,7 +342,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	_logger.log_header();
         if (_logger.is_logging())
         {
-        	_data_num = 0;
+        	_time = 0;
         	return true;
         }
         return false;

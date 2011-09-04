@@ -24,7 +24,7 @@ import android.os.Environment;
 import android.util.Log;
 
 /**
- * @brief Logger class to handle all logging to the microSD card
+ * @brief Logger class to handle all logging to the microSD card.
  */
 public class Logger {
 	private boolean _logging = false;
@@ -40,9 +40,9 @@ public class Logger {
 	private boolean _busy = false;
 
 	/**
-	 * @brief Sets the logging state of the app
-	 * @param logging Set whether the app is logging to file or not
-	 * @details This is used to disable/enable logging
+	 * @brief Sets the logging state of the app.
+	 * @param logging Set whether the app is logging to file or not.
+	 * @details This is used to disable/enable logging.
 	 */
 	public void set_logging(boolean logging)
 	{
@@ -50,9 +50,9 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Retrieves the logging status of the app
-	 * @return Returns whether the app is logging to file or not
-	 * @details This is used to disable/enable logging
+	 * @brief Retrieves the logging status of the app.
+	 * @return Returns whether the app is logging to file or not.
+	 * @details This is used to disable/enable logging.
 	 */
 	public boolean is_logging()
 	{
@@ -60,9 +60,9 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Sets the busy state of the app
-	 * @param busy Set whether the logger is busy, i.e. has a scheduled task waiting
-	 * @details This is used to determine whether or not to start another scheduled logging task 
+	 * @brief Sets the busy state of the app.
+	 * @param busy Set whether the logger is busy, i.e. has a scheduled task waiting.
+	 * @details This is used to determine whether or not to start another scheduled logging task. 
 	 */
 	public void set_busy(boolean busy)
 	{
@@ -70,9 +70,9 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Retrieves the busy status of the logger
-	 * @return Returns whether the logger is busy, i.e. has a scheduled task waiting
-	 * @details This is used to determine whether or not to start another scheduled logging task
+	 * @brief Retrieves the busy status of the logger.
+	 * @return Returns whether the logger is busy, i.e. has a scheduled task waiting.
+	 * @details This is used to determine whether or not to start another scheduled logging task.
 	 */
 	public boolean is_busy()
 	{
@@ -80,8 +80,8 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Sets the seperator character/string for the log entries
-	 * @param seperator The seperator to use between the x, y, and z values in the log
+	 * @brief Sets the seperator character/string for the log entries.
+	 * @param seperator The seperator to use between the x, y, and z values in the log.
 	 */
 	public void set_seperator(String seperator)
 	{
@@ -89,8 +89,8 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Retrieves the seperator character/string for the log entries
-	 * @return Returns the seperator
+	 * @brief Retrieves the seperator character/string for the log entries.
+	 * @return Returns the seperator.
 	 */
 	public String get_seperator()
 	{
@@ -100,7 +100,7 @@ public class Logger {
 	/**
 	 * @brief Initialises the logger.
 	 * @return The result of the initialisation. This is a suitable value for a message telling the user what happened, good or bad.
-	 * @details If logging is on, this is where the logger decides the filename for the log. If there are any errors, it automatically turns logging off
+	 * @details If logging is on, this is where the logger decides the filename for the log. If there are any errors, it automatically turns logging off.
 	 */
 	public String initialize()
 	{
@@ -131,9 +131,9 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Writes header to file.
-	 * @return Returns whether or not the write succeeded
-	 * @details The header is just has the title for each column (Point, X, Y, Z) 
+	 * @brief Writes log header to file.
+	 * @return Returns whether or not the write succeeded.
+	 * @details The header is just has the title for each column (Time (ms), X, Y, Z).
 	 */
 	public boolean log_header()
 	{
@@ -145,7 +145,7 @@ public class Logger {
 				{
 					_log_writer = new FileWriter(_root + _filename + _log_number + _ext, true);
 					BufferedWriter out = new BufferedWriter(_log_writer);
-					out.append("Point" + _seperator + "X" + _seperator + "Y" + _seperator + "Z" + "\n");
+					out.append("Time (ms)" + _seperator + "X" + _seperator + "Y" + _seperator + "Z" + "\n");
 					out.close();
 				}
 				catch(IOException e)
@@ -164,10 +164,10 @@ public class Logger {
 	}
 	
 	/**
-	 * @brief Writes entry to file determined earlier 
-	 * @param entry An array of 4 floats to write to the log file - [number,x,y,z]
-	 * @return Returns whether or not the write succeeded
-	 * @details Automatically turns logging off it something goes wrong
+	 * @brief Writes entry to file determined earlier.
+	 * @param entry An array of 4 floats to write to the log file - [number,x,y,z].
+	 * @return Returns whether or not the write succeeded.
+	 * @details Automatically turns logging off it something goes wrong.
 	 */
 	public boolean log(float[] entry)
 	{

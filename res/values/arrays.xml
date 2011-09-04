@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<!-- Log delay preference arrays -->
     <string-array name="interval_display">
     	<item>100ms</item>
     	<item>500ms</item>
@@ -10,7 +11,6 @@
     	<item>1min</item>
     	<item>5min</item>
     </string-array>
-    
     <string-array name="interval_return">
     	<item>100</item>
     	<item>500</item>
@@ -20,5 +20,59 @@
     	<item>30000</item>
     	<item>60000</item>
     	<item>300000</item>
+    </string-array>
+    
+    <!-- Seperator preference arrays -->
+    <string-array name="seperator_display">
+    	<item>space</item>
+    	<item>,</item>
+    	<item>;</item>
+    	<item>-</item>
+    	<item>|</item>
+    </string-array>
+    <string-array name="seperator_return">
+    	<item> </item>
+    	<item>,</item>
+    	<item>;</item>
+    	<item>-</item>
+    	<item>|</item>
+    </string-array>
+    
+    <!-- Colour preference arrays -->
+    <string-array name="colour_display">
+    	<item>Black</item>
+    	<item>Light Blue</item>
+    	<item>Blue</item>
+    	<item>Dark Blue</item>
+    	<item>Cyan</item>
+    	<item>Light Grey</item>
+    	<item>Grey</item>
+    	<item>Dark Grey</item>
+    	<item>Light Green</item>
+    	<item>Green</item>
+    	<item>Dark Green</item>
+    	<item>Light Red</item>
+    	<item>Red</item>
+    	<item>Dark Red</item>
+    	<item>White</item>
+    	<item>Yellow</item>
+    </string-array>
+    <string-array name="colour_return">
+        <item>0</item>
+    	<item>1</item>
+    	<item>2</item>
+    	<item>3</item>
+    	<item>4</item>
+    	<item>5</item>
+    	<item>6</item>
+    	<item>7</item>
+    	<item>8</item>
+    	<item>9</item>
+    	<item>10</item>
+    	<item>11</item>
+    	<item>12</item>
+    	<item>13</item>
+    	<item>14</item>
+    	<item>15</item>
     </string-array>
 </resources>

@@ -6,5 +6,12 @@
     				android:entryValues="@array/interval_return"
     				android:title="@string/delay_pref_title"
     				android:key="log_delay_pref"
-    				android:summary="@string/delay_pref_desc" />
+    				android:summary="@string/delay_pref_desc"
+    				android:defaultValue="100" />
+    <ListPreference android:entries="@array/seperator_display"
+    				android:entryValues="@array/seperator_return"
+    				android:title="@string/seperator_pref_title"
+    				android:key="seperator_pref"
+    				android:summary="@string/seperator_pref_desc"
+    				android:defaultValue="," />
 </PreferenceScreen>

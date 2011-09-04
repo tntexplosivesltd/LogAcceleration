@@ -15,4 +15,6 @@
     <!-- Preferences Strings -->
     <string name="delay_pref_title">Logging Interval</string>
     <string name="delay_pref_desc">How often do you want the value saved to file?</string>
+    <string name="seperator_pref_title">Log Seperator</string>
+    <string name="seperator_pref_desc">Seperator character to use between log values</string>
 </resources>

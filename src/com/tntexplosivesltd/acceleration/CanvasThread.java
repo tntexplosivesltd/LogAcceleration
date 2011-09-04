@@ -20,7 +20,7 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 /**
- * @brief Handles thread for drawing on the canvas
+ * @brief Handles thread for drawing on the canvas.
  */
 public class CanvasThread extends Thread {
 	private SurfaceHolder _surface_holder;
@@ -28,9 +28,9 @@ public class CanvasThread extends Thread {
 	private boolean _run = false;
 	
 	/**
-	 * @brief Constructor for the CanvasThread class 
-	 * @param holder SurfaceHolder that we can get a canvas from
-	 * @param panel Instance of Panel class to pass the canvas to
+	 * @brief Constructor for the CanvasThread class.
+	 * @param holder SurfaceHolder that we can get a canvas from.
+	 * @param panel Instance of Panel class to pass the canvas to.
 	 */
 	public CanvasThread(SurfaceHolder holder, Panel panel)
 	{
@@ -39,8 +39,8 @@ public class CanvasThread extends Thread {
 	}
 	
 	/**
-	 * @brief Sets whether the canvas drawing thread is running or not
-	 * @param run Whether the thread is running
+	 * @brief Sets whether the canvas drawing thread is running or not.
+	 * @param run Whether the thread is running.
 	 */
 	public void set_running(boolean run)
 	{
@@ -48,8 +48,8 @@ public class CanvasThread extends Thread {
 	}
 	
 	/**
-	 * @brief Retrieves whether or not the drawing thread is running
-	 * @return Set whether or not to draw the graphs on the canvas
+	 * @brief Retrieves whether or not the drawing thread is running.
+	 * @return Set whether or not to draw the graphs on the canvas.
 	 */
 	public boolean is_running()
 	{

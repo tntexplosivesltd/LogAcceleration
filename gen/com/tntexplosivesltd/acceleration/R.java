@@ -9,8 +9,18 @@ package com.tntexplosivesltd.acceleration;
 
 public final class R {
     public static final class array {
+        /**  Colour preference arrays 
+         */
+        public static final int colour_display=0x7f050004;
+        public static final int colour_return=0x7f050005;
+        /**  Log delay preference arrays 
+         */
         public static final int interval_display=0x7f050000;
         public static final int interval_return=0x7f050001;
+        /**  Seperator preference arrays 
+         */
+        public static final int seperator_display=0x7f050002;
+        public static final int seperator_return=0x7f050003;
     }
     public static final class attr {
     }
@@ -47,6 +57,8 @@ public final class R {
         public static final int mode_graph=0x7f060005;
         public static final int orientation_flat=0x7f060006;
         public static final int orientation_upright=0x7f060007;
+        public static final int seperator_pref_desc=0x7f06000c;
+        public static final int seperator_pref_title=0x7f06000b;
         public static final int settings=0x7f060008;
     }
     public static final class xml {

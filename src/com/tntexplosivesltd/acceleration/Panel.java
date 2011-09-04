@@ -20,7 +20,6 @@ import java.util.ListIterator;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -46,9 +45,9 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	private float _circle_diameter = 10f;
 
 	/**
-	 * @brief Public constructor
-	 * @param context Current context - used for superclass
-	 * @param attrs Attribute set - used for superclass
+	 * @brief Public constructor.
+	 * @param context Current context - used for superclass.
+	 * @param attrs Attribute set - used for superclass.
 	 */
 	public Panel(Context context, AttributeSet attrs)
 	{
@@ -58,26 +57,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
-	 * @brief SurfaceChanged called when the surface is changed. Needed for SurfaceView
+	 * @brief SurfaceChanged called when the surface is changed. Needed for SurfaceView.
 	 */
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
-	
-	/*
-		boolean retry = true;
-		_canvas_thread.set_running(false);
-		while (retry)
-		{
-			try
-			{
-				_canvas_thread.join();
-				retry = false;
-			}
-			catch (InterruptedException e)
-			{
-			}
-		}
-	 */
 
 	/**
 	 * @brief Called when the surface is created. Sets itinial variables like paints, and starts canvas thread.
@@ -87,14 +70,14 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		_canvas_thread = new CanvasThread(getHolder(), this);
 		_canvas_thread.set_running(true);
 		_canvas_thread.start();
-		_circle_paint.setColor(Color.BLUE);
-		_line_paint.setColor(Color.GRAY);
-		_block_paint.setColor(Color.LTGRAY);
-		_block_text.setColor(Color.BLACK);
-		_x_paint.setColor(Color.RED);
-		_y_paint.setColor(Color.rgb(0, 127, 0));
-		_z_paint.setColor(Color.BLUE);
-		_extremes.setColor(Color.YELLOW);
+		_block_paint.setColor(ColourManager.colours[1]);
+		_circle_paint.setColor(ColourManager.colours[2]);
+		_line_paint.setColor(ColourManager.colours[3]);
+		_extremes.setColor(ColourManager.colours[4]);
+		_block_text.setColor(ColourManager.colours[5]);
+		_x_paint.setColor(ColourManager.colours[6]);
+		_y_paint.setColor(ColourManager.colours[7]);
+		_z_paint.setColor(ColourManager.colours[8]);
 		_x_paint.setStrokeWidth(_graph_width);
 		_y_paint.setStrokeWidth(_graph_width);
 		_z_paint.setStrokeWidth(_graph_width);
@@ -121,7 +104,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
-	 * @brief called by the CanvasThread class. Draws the graphs with current values
+	 * @brief Called by the CanvasThread class. Draws the graphs with current values.
 	 * @param canvas The canvas to draw on. 
 	 */
 	@Override
@@ -134,7 +117,7 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		float ninth = view_height / 9;
 		float g_width = view_width / GraphData.max_data;
 		
-		canvas.drawColor(Color.WHITE);
+		canvas.drawColor(ColourManager.colours[0]);
 		
 		if (GraphData.mode == 0)
 		{
