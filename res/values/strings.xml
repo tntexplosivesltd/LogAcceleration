@@ -19,6 +19,8 @@
     <string name="seperator_pref_desc">Seperator character to use between log values</string>
     
     <!-- Colour preferences -->
+    <string name="colour_pref_title">Change graph colours...</string>
+    <string name="colour_pref_desc">Settings for changing graph colours</string>
     <string name="bg_pref_title">Background Colour</string>
     <string name="bg_pref_desc">Colour of the graph background</string>
     <string name="box_pref_title">Text Box Colour</string>
@@ -37,4 +39,6 @@
     <string name="y_pref_desc">Colour of the Y-axis graph</string>
     <string name="z_pref_title">Z-axis Colour</string>
     <string name="z_pref_desc">Colour of the Z-axis graph</string>
+    <string name="reset_pref_title">Reset all colours</string>
+    <string name="reset_pref_desc">Resets all graph colours to their default value</string>
 </resources>

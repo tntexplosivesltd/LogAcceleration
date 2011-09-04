@@ -25,7 +25,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-// Hardware/accelerometer imports
+
+import android.graphics.Color;
+
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorEvent;
@@ -63,7 +65,16 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	private SensorManager _sensor_manager = null;
 	
 	// "Constants" 
+	/**
+	 * @brief Whether or not degug mode is on.
+	 * @details In debug mode, a few more Toasts show up with debug info.
+	 */
 	static final boolean DEBUG = false;
+	
+	/**
+	 * @brief Constant passed to the dialog creator.
+	 * @details Corresponds to the "Restart logging?" dialog and associated yes/no actions
+	 */
 	static final int RESET_DIALOG = 0;
 	
     /** 
@@ -96,9 +107,27 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	_seperator = seperator_preference_string;
     	_logger.set_seperator(_seperator);
     	
-    	// Set the colours from the preferences
-    	ColourManager.set_colours(ColourManager.palette[Integer.parseInt(preferences.getString("bg_pref", "14"))], ColourManager.palette[Integer.parseInt(preferences.getString("box_pref", "5"))], ColourManager.palette[Integer.parseInt(preferences.getString("circle_pref", "2"))], ColourManager.palette[Integer.parseInt(preferences.getString("grid_pref", "6"))], ColourManager.palette[Integer.parseInt(preferences.getString("minmax_pref", "15"))], ColourManager.palette[Integer.parseInt(preferences.getString("text_pref", "0"))], ColourManager.palette[Integer.parseInt(preferences.getString("x_pref", "12"))], ColourManager.palette[Integer.parseInt(preferences.getString("y_pref", "10"))], ColourManager.palette[Integer.parseInt(preferences.getString("z_pref", "2"))]);
-    	Panel.refresh_colours();
+    	if (ColourManager.was_reset)
+    	{
+    		SharedPreferences.Editor editor = preferences.edit();
+	    	editor.putString("bg_pref", "14");
+	    	editor.putString("box_pref", "5");
+	    	editor.putString("circle_pref", "2");
+	    	editor.putString("grid_pref", "6");
+	    	editor.putString("minmax_pref", "15");
+	    	editor.putString("text_pref", "0");
+	    	editor.putString("x_pref", "12");
+	    	editor.putString("y_pref", "9");
+	    	editor.putString("z_pref", "2");
+	    	editor.commit();
+    		ColourManager.was_reset = false;
+    	}
+    	else
+    	{
+    		// Set the colours from the preferences
+	    	ColourManager.set_colours(ColourManager.palette[Integer.parseInt(preferences.getString("bg_pref", "14"))], ColourManager.palette[Integer.parseInt(preferences.getString("box_pref", "5"))], ColourManager.palette[Integer.parseInt(preferences.getString("circle_pref", "2"))], ColourManager.palette[Integer.parseInt(preferences.getString("grid_pref", "6"))], ColourManager.palette[Integer.parseInt(preferences.getString("minmax_pref", "15"))], ColourManager.palette[Integer.parseInt(preferences.getString("text_pref", "0"))], ColourManager.palette[Integer.parseInt(preferences.getString("x_pref", "12"))], ColourManager.palette[Integer.parseInt(preferences.getString("y_pref", "9"))], ColourManager.palette[Integer.parseInt(preferences.getString("z_pref", "2"))]);
+	    	Panel.refresh_colours();
+    	}
     	
     	if (_first_run)
     	{
@@ -300,7 +329,12 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
+	/**
+	 * @brief Handles which dialog to display.
+	 * @param id The numerical ID of the dialog to show.
+	 * @return A Dialog object which holds the correct dialog to display.
+	 */
 	protected Dialog onCreateDialog(int id)
 	{
 		Dialog dialog;

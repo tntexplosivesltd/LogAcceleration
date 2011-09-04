@@ -17,7 +17,10 @@
 package com.tntexplosivesltd.acceleration;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.widget.Toast;
 
 /**
  * @brief Preferences activity that gets launched when "Settings" is pressed
@@ -31,5 +34,18 @@ public class PreferencesActivity extends PreferenceActivity {
 	{
 	    super.onCreate(savedInstanceState);
 	    addPreferencesFromResource(R.xml.preferences);
+	    Preference reset_pref = (Preference)findPreference("reset_pref");
+	    reset_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	    {
+	    	public boolean onPreferenceClick(Preference preference)
+	    	{
+	    		ColourManager.reset();
+	    		Panel.refresh_colours();
+	    		ColourManager.was_reset = true;
+	    		Toast.makeText(getBaseContext(), "Colours Reset", Toast.LENGTH_SHORT).show();
+	    		PreferencesActivity.this.finish();
+	    		return true;
+	    	}
+	    });
 	}
 }

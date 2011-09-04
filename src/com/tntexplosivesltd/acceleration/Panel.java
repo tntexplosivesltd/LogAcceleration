@@ -83,6 +83,10 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		_z_paint.setStrokeWidth(_graph_thickness);
 	}
 
+	/**
+	 * @brief Changes colours of drawing paints to current colours provided in ColourManager
+	 * 
+	 */
 	public static void refresh_colours()
 	{
 		_box_paint.setColor(ColourManager.colours[1]);

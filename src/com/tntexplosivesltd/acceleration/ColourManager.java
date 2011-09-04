@@ -22,6 +22,8 @@ import android.graphics.Color;
  */
 public class ColourManager {
 	
+	public static boolean was_reset = false;
+	
 	/**
 	 * @brief Array of colours to use in drawing.
 	 * @details Integer values obtained through android.graphics.Color.
@@ -33,8 +35,6 @@ public class ColourManager {
 	 * @details Might add to later, at the moment just basic colours,
 	 */
 	public static int[] palette = {Color.BLACK, Color.rgb(127, 127, 255), Color.BLUE,Color.rgb(0, 0, 127), Color.CYAN, Color.LTGRAY, Color.GRAY, Color.DKGRAY, Color.rgb(127,255,127), Color.GREEN, Color.rgb(0, 127, 0), Color.rgb(255, 127, 127), Color.RED, Color.rgb(127, 0, 0), Color.WHITE, Color.YELLOW};
-	
-	private static Integer[] _defaults = colours.clone();
 	
 	/**
 	 * @brief Sets the colours to use for drawing.
@@ -67,6 +67,14 @@ public class ColourManager {
 	 */
 	public static void reset()
 	{
-		colours = _defaults.clone();
+		colours[0] = Color.WHITE;
+		colours[1] = Color.LTGRAY;
+		colours[2] = Color.BLUE;
+		colours[3] = Color.GRAY;
+		colours[4] = Color.YELLOW;
+		colours[5] = Color.BLACK;
+		colours[6] = Color.RED;
+		colours[7] = Color.GREEN;
+		colours[8] = Color.BLUE;
 	}
 }
