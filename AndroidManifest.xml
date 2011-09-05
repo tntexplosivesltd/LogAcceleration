@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.tntexplosivesltd.acceleration"
-      android:versionCode="1"
-      android:versionName="1.0">
+      android:versionCode="2"
+      android:versionName="1.01">
     <uses-sdk android:minSdkVersion="7" />
+    <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:icon="@drawable/release_icon" android:label="@string/app_name">
         <activity android:name=".LogAccelerationActivity"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.NoTitleBar">
