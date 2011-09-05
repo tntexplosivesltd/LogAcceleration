@@ -26,8 +26,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import android.graphics.Color;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorEvent;
@@ -204,6 +202,10 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    									_logger.set_logging(false);
 	    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
 	    								}
+	    								else
+	    								{
+	    									_time += _delay;
+	    								}
 	    								_logger.set_busy(false);
 	    							}
 	    						}
@@ -212,7 +214,6 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    					{
 		    					_handler.postDelayed(_logging_task, _delay);
 	    					}
-	    					_time += _delay;
 	    				}
 	    			}
 	    			
