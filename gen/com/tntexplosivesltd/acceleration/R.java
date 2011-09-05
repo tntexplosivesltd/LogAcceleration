@@ -78,6 +78,8 @@ public final class R {
         public static final int seperator_pref_desc=0x7f06000c;
         public static final int seperator_pref_title=0x7f06000b;
         public static final int settings=0x7f060008;
+        public static final int source_pref_desc=0x7f060028;
+        public static final int source_pref_title=0x7f060027;
         public static final int text_pref_desc=0x7f06001a;
         public static final int text_pref_title=0x7f060019;
         public static final int web_pref_desc=0x7f060024;

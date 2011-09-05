@@ -39,6 +39,7 @@ public class PreferencesActivity extends PreferenceActivity {
 	    Preference reset_pref = (Preference)findPreference("reset_pref");
 	    Preference web_pref = (Preference)findPreference("web_pref");
 	    Preference bug_pref = (Preference)findPreference("bug_pref");
+	    Preference source_pref = (Preference)findPreference("source_pref");
 	    reset_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	    {
 	    	public boolean onPreferenceClick(Preference preference)
@@ -66,7 +67,17 @@ public class PreferencesActivity extends PreferenceActivity {
 	    {
 	    	public boolean onPreferenceClick(Preference preference)
 	    	{
-	    		Intent website_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://entropy.net.nz/Software"));
+	    		Intent website_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tntexplosivesltd/LogAcceleration/issues"));
+	    		startActivity(website_intent);
+	    		return true;
+	    	}
+	    });
+	    
+	    source_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	    {
+	    	public boolean onPreferenceClick(Preference preference)
+	    	{
+	    		Intent website_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/tntexplosivesltd/LogAcceleration"));
 	    		startActivity(website_intent);
 	    		return true;
 	    	}

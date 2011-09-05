@@ -91,5 +91,8 @@
         <Preference android:title="@string/bug_pref_title"
                     android:summary="@string/bug_pref_desc"
                     android:key="bug_pref" />
+        <Preference android:title="@string/source_pref_title"
+                    android:summary="@string/source_pref_desc"
+                    android:key="source_pref" />
     </PreferenceCategory>
 </PreferenceScreen>

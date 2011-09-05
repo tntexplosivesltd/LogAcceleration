@@ -44,5 +44,7 @@
     <string name="web_pref_title">Visit developer\'s website</string>
     <string name="web_pref_desc">Opens browser and takes you to the developer\'s website</string>
     <string name="bug_pref_title">Report a bug</string>
-    <string name="bug_pref_desc">Opens browser and takes you to the bug report bage.</string>
+    <string name="bug_pref_desc">Opens browser and takes you to the Github bug report page.</string>
+    <string name="source_pref_title">View github page</string>
+    <string name="source_pref_desc">Opens browser and takes you to the LogAcceleration source page.</string>
 </resources>
