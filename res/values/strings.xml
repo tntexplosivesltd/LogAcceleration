@@ -41,4 +41,8 @@
     <string name="z_pref_desc">Colour of the Z-axis graph</string>
     <string name="reset_pref_title">Reset all colours</string>
     <string name="reset_pref_desc">Resets all graph colours to their default value</string>
+    <string name="web_pref_title">Visit developer\'s website</string>
+    <string name="web_pref_desc">Opens browser and takes you to the developer\'s website</string>
+    <string name="bug_pref_title">Report a bug</string>
+    <string name="bug_pref_desc">Opens browser and takes you to the bug report bage.</string>
 </resources>

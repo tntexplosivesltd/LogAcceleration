@@ -16,6 +16,8 @@
  */
 package com.tntexplosivesltd.acceleration;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -35,6 +37,8 @@ public class PreferencesActivity extends PreferenceActivity {
 	    super.onCreate(savedInstanceState);
 	    addPreferencesFromResource(R.xml.preferences);
 	    Preference reset_pref = (Preference)findPreference("reset_pref");
+	    Preference web_pref = (Preference)findPreference("web_pref");
+	    Preference bug_pref = (Preference)findPreference("bug_pref");
 	    reset_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	    {
 	    	public boolean onPreferenceClick(Preference preference)
@@ -44,6 +48,26 @@ public class PreferencesActivity extends PreferenceActivity {
 	    		ColourManager.was_reset = true;
 	    		Toast.makeText(getBaseContext(), "Colours Reset", Toast.LENGTH_SHORT).show();
 	    		PreferencesActivity.this.finish();
+	    		return true;
+	    	}
+	    });
+	    
+	    web_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	    {
+	    	public boolean onPreferenceClick(Preference preference)
+	    	{
+	    		Intent website_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://entropy.net.nz"));
+	    		startActivity(website_intent);
+	    		return true;
+	    	}
+	    });
+	    
+	    bug_pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	    {
+	    	public boolean onPreferenceClick(Preference preference)
+	    	{
+	    		Intent website_intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://entropy.net.nz/Software"));
+	    		startActivity(website_intent);
 	    		return true;
 	    	}
 	    });

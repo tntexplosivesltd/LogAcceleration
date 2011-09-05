@@ -84,4 +84,12 @@
                     android:summary="@string/reset_pref_desc"
                     android:key="reset_pref" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Developer">
+        <Preference android:title="@string/web_pref_title"
+                    android:summary="@string/web_pref_desc"
+                    android:key="web_pref" />
+        <Preference android:title="@string/bug_pref_title"
+                    android:summary="@string/bug_pref_desc"
+                    android:key="bug_pref" />
+    </PreferenceCategory>
 </PreferenceScreen>

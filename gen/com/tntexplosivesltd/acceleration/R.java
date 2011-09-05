@@ -48,6 +48,8 @@ public final class R {
         public static final int bg_pref_title=0x7f06000f;
         public static final int box_pref_desc=0x7f060012;
         public static final int box_pref_title=0x7f060011;
+        public static final int bug_pref_desc=0x7f060026;
+        public static final int bug_pref_title=0x7f060025;
         public static final int circle_pref_desc=0x7f060014;
         public static final int circle_pref_title=0x7f060013;
         public static final int colour_pref_desc=0x7f06000e;
@@ -78,6 +80,8 @@ public final class R {
         public static final int settings=0x7f060008;
         public static final int text_pref_desc=0x7f06001a;
         public static final int text_pref_title=0x7f060019;
+        public static final int web_pref_desc=0x7f060024;
+        public static final int web_pref_title=0x7f060023;
         public static final int x_pref_desc=0x7f06001c;
         public static final int x_pref_title=0x7f06001b;
         public static final int y_pref_desc=0x7f06001e;
