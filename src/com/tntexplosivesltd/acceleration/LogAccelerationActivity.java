@@ -47,14 +47,8 @@ import android.widget.Toast;
  * @details This is the activity automatically started when the app starts. 
  */
 public class LogAccelerationActivity extends Activity implements SensorEventListener {
-	private boolean _first_run = true;
 	private boolean _paused = false;
 	private int _time;
-	private int _delay = 100;
-	private int _prev_delay = 0;
-	private String _seperator = ",";
-	private String _prev_seperator = "";
-	
 	private Handler _handler = new Handler();
 	private Logger _logger = new Logger();
 	private PowerManager _pm = null;
@@ -101,9 +95,8 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     	String delay_preference_string = preferences.getString("log_delay_pref", "100");
     	String seperator_preference_string = preferences.getString("seperator_pref", ",");
-    	_delay = Integer.parseInt(delay_preference_string);
-    	_seperator = seperator_preference_string;
-    	_logger.set_seperator(_seperator);
+    	_logger.set_delay(Integer.parseInt(delay_preference_string));
+    	_logger.set_seperator(seperator_preference_string);
     	
     	if (ColourManager.was_reset)
     	{
@@ -127,25 +120,15 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    	Panel.refresh_colours();
     	}
     	
-    	if (_first_run)
-    	{
-    		_prev_delay = _delay;
-    		_prev_seperator = _seperator;
-    	}
-    	else
-    	{
-    		if ((_delay != _prev_delay) || (_seperator != _prev_seperator))
-    		{
-    			if (_logger.is_logging())
-    			{
-    				showDialog(RESET_DIALOG);
-    				_paused = true;
-    			}
-    			_prev_delay = _delay;
-    			_prev_seperator = _seperator;
-    		}
-    	}
-    	_first_run = false;
+		if (_logger.has_changed())
+		{
+			if (_logger.is_logging())
+			{
+				showDialog(RESET_DIALOG);
+				_paused = true;
+			}
+			_logger.clear_changed();
+		}
     	if (DEBUG)
     	{
     		Toast.makeText(getApplicationContext(), preferences.getString("circle_pref", "2"), Toast.LENGTH_LONG).show();
@@ -153,6 +136,12 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     		Toast.makeText(getApplicationContext(), seperator_preference_string, Toast.LENGTH_SHORT).show();
     	}
     	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
+    }
+    
+    protected void onPause()
+    {
+    	super.onPause();
+    	_logger.flush();
     }
     
     /**
@@ -163,6 +152,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     protected void onStop()
     {
     	super.onStop();
+    	_logger.flush();
     	_wl.release();
     	_sensor_manager.unregisterListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
     }
@@ -204,7 +194,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    								}
 	    								else
 	    								{
-	    									_time += _delay;
+	    									_time += _logger.delay();
 	    								}
 	    								_logger.set_busy(false);
 	    							}
@@ -212,7 +202,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    					};
 	    					synchronized (_handler)
 	    					{
-		    					_handler.postDelayed(_logging_task, _delay);
+		    					_handler.postDelayed(_logging_task, _logger.delay());
 	    					}
 	    				}
 	    			}
@@ -312,10 +302,11 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 		case R.id.logging:
 			if (_logger.is_logging())
 			{
+				_logger.close_logs();
 				_logger.set_logging(false);
 				item.setTitle(R.string.logging_off);
 				_time = 0;
-		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_LONG).show();
+		        Toast.makeText(getApplicationContext(), "Logging is now off.", Toast.LENGTH_SHORT).show();
 			}
 			else
 			{

@@ -29,13 +29,17 @@ import android.util.Log;
 public class Logger {
 	private boolean _logging = false;
 	private boolean _can_log = false;
-	private String _seperator = ",";
-	private String _filename = "/LogAcceleration_";
+	private boolean _has_changed = false;
+	private int _delay = 0;
+	private int _log_number = 0;
 	private String _ext = ".csv";
+	private String _filename = "LogAcceleration_";
+	private String _seperator = ",";
+	
 	private File _log_file;
 	private File _root;
 	private FileWriter _log_writer;
-	private int _log_number = 0;
+	private BufferedWriter out;
 	
 	private boolean _busy = false;
 
@@ -59,6 +63,32 @@ public class Logger {
 		return _logging;
 	}
 	
+	
+	public boolean has_changed()
+	{
+		return _has_changed;
+	}
+	
+	public void clear_changed()
+	{
+		_has_changed = false;
+	}
+	
+	
+	public void set_delay(Integer delay)
+	{
+		if (delay != _delay)
+		{
+			_has_changed = true;
+			_delay = delay;
+		}
+	}
+	
+	public int delay()
+	{
+		return _delay;
+	}
+
 	/**
 	 * @brief Sets the busy state of the app.
 	 * @param busy Set whether the logger is busy, i.e. has a scheduled task waiting.
@@ -85,7 +115,11 @@ public class Logger {
 	 */
 	public void set_seperator(String seperator)
 	{
-		_seperator = seperator;
+		if (!seperator.equals(_seperator))
+		{
+			_seperator = seperator;
+			_has_changed = true;
+		}
 	}
 	
 	/**
@@ -95,6 +129,58 @@ public class Logger {
 	public String get_seperator()
 	{
 		return _seperator;
+	}
+	
+	/**
+	 * @brief Flushes the output buffer.
+	 * @return Whether or not the flush was successful.
+	 * @details Should be called when the app is paused.
+	 */
+	public String flush()
+	{
+		try
+		{
+			if (out != null)
+			{
+				out.flush();
+			}
+			if (_log_writer != null)
+			{
+				_log_writer.flush();
+			}
+		}
+		catch(IOException e)
+		{
+			Log.e("LogAggeleration", "Can not flush: " + e.getMessage());
+			return "Could not flush buffer.";
+		}
+		return "Buffer Flushed.";
+	}
+	
+	/**
+	 * @brief Closes file writers, flushing them.
+	 * @return Whether or not the closing was successful.
+	 * @details Should be called when the app closes, and when logging is turned off.
+	 */
+	public String close_logs()
+	{
+		try
+		{
+			if (out != null)
+			{
+				out.close();
+			}
+			if (_log_writer != null)
+			{
+				_log_writer.close();
+			}
+		}
+		catch(IOException e)
+		{
+			Log.e("LogAggeleration", "Can not flush: " + e.getMessage());
+			return "Could not flush buffer.";
+		}
+		return "Buffer Flushed.";
 	}
 
 	/**
@@ -106,27 +192,45 @@ public class Logger {
 	{
 		if (_logging)
 		{
-			_root = Environment.getExternalStorageDirectory();
+			_root = new File(Environment.getExternalStorageDirectory() + "/LogAcceleration/");
+			if (!_root.exists())
+			{
+				if (! _root.mkdir())
+					return "Could not create directory for logs. Logging turned off";
+			}
+			
 			if (_root.canWrite())
 			{
-				_log_file = new File(_root + _filename + _log_number + _ext);
+				_log_file = new File(_root + "/" + _filename + _log_number + _ext);
 				while (_log_file.exists())
 				{
 					_log_number++;
-					_log_file = new File(_root + _filename + _log_number + _ext);
+					_log_file = new File(_root + "/" + _filename + _log_number + _ext);
+				}
+
+				try
+				{
+					_log_writer = new FileWriter(_log_file, true);
+					out = new BufferedWriter(_log_writer);
+				}
+				catch (IOException e)
+				{
+					Log.e("LogAggeleration", "Can not create filewriter: " + e.getMessage());
+					_logging = false;
+					return "Can not create file writer.";
 				}
 				_can_log = true;
-				return "Logging to " + _root + _filename + _log_number + _ext;
+				return "Logging to " + _root + "/" + _filename + _log_number + _ext;
 			}
 			else
 			{
 				_logging = false;
-				return "Can not write to SD card";
+				return "Can not write to SD card. Logging is off.";
 			}
 		}
 		else
 		{
-			return "Logging Disabled";
+			return "Logging is disabled.";
 		}
 	}
 	
@@ -143,10 +247,7 @@ public class Logger {
 			{
 				try
 				{
-					_log_writer = new FileWriter(_root + _filename + _log_number + _ext, true);
-					BufferedWriter out = new BufferedWriter(_log_writer);
 					out.append("Time (ms)" + _seperator + "X" + _seperator + "Y" + _seperator + "Z" + "\n");
-					out.close();
 				}
 				catch(IOException e)
 				{
@@ -181,10 +282,7 @@ public class Logger {
 				}
 				try
 				{
-					_log_writer = new FileWriter(_root + _filename + _log_number + _ext, true);
-					BufferedWriter out = new BufferedWriter(_log_writer);
 					out.append((int)entry[0] + _seperator + entry[1] + _seperator + entry[2] + _seperator + entry[3] + "\n");
-					out.close();
 				}
 				catch(IOException e)
 				{

@@ -55,12 +55,6 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		getHolder().addCallback(this);
 		setFocusable(true);
 	}
-	
-	/**
-	 * @brief SurfaceChanged called when the surface is changed. Needed for SurfaceView.
-	 */
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
 	/**
 	 * @brief Called when the surface is created. Sets itinial variables like paints, and starts canvas thread.
@@ -82,6 +76,12 @@ public class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		_y_paint.setStrokeWidth(_graph_thickness);
 		_z_paint.setStrokeWidth(_graph_thickness);
 	}
+	
+	/**
+	 * @brief SurfaceChanged called when the surface is changed. Needed for SurfaceView.
+	 */
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
 	/**
 	 * @brief Changes colours of drawing paints to current colours provided in ColourManager
