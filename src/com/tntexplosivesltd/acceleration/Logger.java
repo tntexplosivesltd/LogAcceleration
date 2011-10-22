@@ -63,18 +63,27 @@ public class Logger {
 		return _logging;
 	}
 	
-	
+	/**
+	 * @brief Retrieves whether or not the logging preferences have changed.
+	 * @return Whether or not the logging preferences have changed.
+	 */
 	public boolean has_changed()
 	{
 		return _has_changed;
 	}
 	
+	/**
+	 * @brief Clears whether the preferences have been changed.
+	 */
 	public void clear_changed()
 	{
 		_has_changed = false;
 	}
 	
-	
+	/**
+	 * @brief Sets the logging delay of this instance of Logger
+	 * @param delay The delay between each entry (ms)
+	 */
 	public void set_delay(Integer delay)
 	{
 		if (delay != _delay)
@@ -84,6 +93,10 @@ public class Logger {
 		}
 	}
 	
+	/**
+	 * @brief Retrieves the logging delay of this instance of Logger
+	 * @return The delay between each entry (ms)
+	 */
 	public int delay()
 	{
 		return _delay;

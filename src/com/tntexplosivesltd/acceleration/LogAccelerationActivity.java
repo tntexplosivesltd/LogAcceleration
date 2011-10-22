@@ -138,6 +138,10 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     	_sensor_manager.registerListener(this, _sensor_manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_UI);
     }
     
+    /**
+     * @brief Gets called when the app is paused.
+     * @details Flushes the file writers so their contents are up to date.
+     */
     protected void onPause()
     {
     	super.onPause();
@@ -146,7 +150,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
     
     /**
      * @brief Gets called when app Stops.
-     * Unregisters accelerometer as sensor, and removes the wake lock.
+     * @details Unregisters accelerometer as sensor, and removes the wake lock.
      */
     @Override
     protected void onStop()
