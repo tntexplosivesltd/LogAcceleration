@@ -191,7 +191,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    						{
 	    							if (_logger.is_logging())
 	    							{
-	    								if (!_logger.log(new float[]{(float)_time,GraphData.x,GraphData.y,GraphData.z}))
+	    								if (!_logger.log(_time, GraphData.x, GraphData.y ,GraphData.z))
 	    								{
 	    									_logger.set_logging(false);
 	    									Toast.makeText(getApplicationContext(), "Could not wrote to log. Logging is now off.", Toast.LENGTH_LONG).show();
@@ -211,6 +211,7 @@ public class LogAccelerationActivity extends Activity implements SensorEventList
 	    				}
 	    			}
 	    			
+	    			// Sort out maximums and minimums
 	    			if (GraphData.x > GraphData.max_x)
 	    				GraphData.max_x = GraphData.x;
 	    			else if (GraphData.x < GraphData.min_x)

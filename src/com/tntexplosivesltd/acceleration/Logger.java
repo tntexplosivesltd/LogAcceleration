@@ -283,19 +283,15 @@ public class Logger {
 	 * @return Returns whether or not the write succeeded.
 	 * @details Automatically turns logging off it something goes wrong.
 	 */
-	public boolean log(float[] entry)
+	public boolean log(int time, float x, float y, float z)
 	{
 		if (_logging)
 		{
 			if (_can_log)
 			{
-				if (entry.length != 4)
-				{
-					return false;
-				}
 				try
 				{
-					out.append((int)entry[0] + _seperator + entry[1] + _seperator + entry[2] + _seperator + entry[3] + "\n");
+					out.append(time + _seperator + x + _seperator + y + _seperator + z + "\n");
 				}
 				catch(IOException e)
 				{
@@ -306,9 +302,8 @@ public class Logger {
 			}
 		}
 		else
-		{
 			return false;
-		}
+		
 		return true;
 	}
 }
